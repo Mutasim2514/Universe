@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced Solar System Explorer with Zodiac Constellations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(ellipse at center, #0f0f23 0%, #000 70%);
+            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            height: 100vh;
+        }
+
+        #canvas-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        canvas {
+            display: block;
+            cursor: grab;
+        }
+
+        canvas:active {
+            cursor: grabbing;
+        }
+
+        #ui-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        #title {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2.5em;
+            font-weight: 300;
+            text-align: center;
+            background: linear-gradient(45deg, #4f46e5, #7c3aed, #ec4899, #f59e0b);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientFlow 6s ease infinite;
+            pointer-events: none;
+            text-shadow: 0 0 30px rgba(79, 70, 229, 0.3);
+        }
+
+        @keyframes gradientFlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .panel {
+            background: rgba(15, 15, 35, 0.8);
+            backdrop-filter: blur(20px);
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            pointer-events: auto;
+            margin: 5px;
+        }
+
+        #left-panels {
+            position: absolute;
+            left: 20px;
+            top: 80px;
+            display: flex;
+            flex-direction: column;
+            max-width: 300px;
+        }
+
+        #right-panels {
+            position: absolute;
+            right: 20px;
+            top: 80px;
+            display: flex;
+            flex-direction: column;
+            max-width: 300px;
+        }
+
+        #controls {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            background: rgba(15, 15, 35, 0.8);
+            backdrop-filter: blur(20px);
+            padding: 15px 25px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            pointer-events: auto;
+        }
+
+        .control-btn, .time-btn, .scale-mode-btn {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 2px;
+        }
+
+        .control-btn:hover, .time-btn:hover, .scale-mode-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.3);
+            background: linear-gradient(135deg, #5b52e8 0%, #8b4cf0 100%);
+        }
+
+        .control-btn.active, .time-btn.active, .scale-mode-btn.active {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
+        }
+
+        .panel-title {
+            color: #00ff88;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .panel-content {
+            font-size: 14px;
+            color: #a1a1aa;
+            line-height: 1.4;
+        }
+
+        #search-box {
+            width: 100%;
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        #search-results {
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .search-result {
+            padding: 6px 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            margin: 2px 0;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+
+        .search-result:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .asteroid-toggle, .comet-toggle {
+            display: block;
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            pointer-events: none;
+            z-index: 200;
+            transform: translate(-50%, -120%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 250px;
+            white-space: pre-line;
+        }
+
+        .tooltip.show {
+            opacity: 1;
+        }
+
+        #mission-tracker {
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .mission-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 11px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .ellipse-info {
+            font-size: 11px;
+            margin-top: 5px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .comparison-mode {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .comparison-planet {
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 11px;
+            transition: background 0.2s;
+        }
+
+        .comparison-planet:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .comparison-planet.selected {
+            background: rgba(0, 255, 136, 0.2);
+            border: 1px solid #00ff88;
+        }
+
+        .constellation-toggle {
+            display: block;
+            width: 100%;
+            margin-bottom: 5px;
+        }
+
+        .constellation-info {
+            font-size: 11px;
+            margin-top: 5px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        @media (max-width: 768px) {
+            #left-panels, #right-panels {
+                position: relative;
+                max-width: 100%;
+                margin: 10px;
+            }
+            
+            #controls {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container">
+        <canvas id="solarCanvas"></canvas>
+        
+        <div id="ui-overlay">
+            <h1 id="title">Enhanced Solar System Explorer</h1>
+            
+            <div id="left-panels">
+                <!-- Search Panel -->
+                <div class="panel">
+                    <div class="panel-title">Search Objects</div>
+                    <input type="text" id="search-box" placeholder="Search planets, moons, asteroids...">
+                    <div id="search-results" class="panel-content"></div>
+                </div>
+
+                <!-- Scale & View Panel -->
+                <div class="panel">
+                    <div class="panel-title">Scale Mode</div>
+                    <button class="scale-mode-btn active" id="true-scale">True Scale</button>
+                    <button class="scale-mode-btn" id="enhanced-planets">Enhanced</button>
+                    <button class="scale-mode-btn" id="logarithmic">Logarithmic</button>
+                    <div class="panel-content" style="margin-top: 10px;">
+                        <div id="scale-details">Astronomically accurate sizes and distances</div>
+                        <div style="margin-top: 10px;">
+                            Zoom: <span id="zoom-level">1x</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Objects Panel -->
+                <div class="panel">
+                    <div class="panel-title">Additional Objects</div>
+                    <button class="control-btn asteroid-toggle" id="toggle-asteroids">Asteroid Belt</button>
+                    <button class="control-btn comet-toggle" id="toggle-comets">Comets</button>
+                    <button class="control-btn" id="toggle-spacecraft">Spacecraft</button>
+                    <button class="control-btn" id="toggle-dwarf-planets">Dwarf Planets</button>
+                    <button class="control-btn constellation-toggle" id="toggle-constellations">Constellations</button>
+                    <div class="constellation-info" id="constellation-info" style="display: none;">
+                        <div>Showing 12 zodiac constellations</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="right-panels">
+                <!-- Time Control Panel -->
+                <div class="panel">
+                    <div class="panel-title">Time Control</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px;">
+                        <button class="time-btn" id="time-normal">Real Time</button>
+                        <button class="time-btn active" id="time-1sec-day">1s = 1day</button>
+                        <button class="time-btn" id="time-1sec-week">1s = 1week</button>
+                        <button class="time-btn" id="time-1sec-month">1s = 1month</button>
+                    </div>
+                    <div class="panel-content" style="text-align: center; margin-top: 10px;">
+                        <div id="time-display">1 Second = 1 Day</div>
+                        <div id="current-date" style="font-size: 12px; margin-top: 5px;"></div>
+                    </div>
+                </div>
+
+                <!-- Orbital Information Panel -->
+                <div class="panel">
+                    <div class="panel-title">Orbital Mechanics</div>
+                    <button class="control-btn" id="toggle-ellipses">Elliptical Orbits</button>
+                    <button class="control-btn" id="toggle-barycenter">Barycenter</button>
+                    <div class="ellipse-info" id="ellipse-info" style="display: none;">
+                        <div>Showing realistic elliptical orbits</div>
+                        <div style="font-size: 10px; margin-top: 5px;">
+                            Planets speed up at perihelion, slow at aphelion
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Constellation Panel -->
+                <div class="panel">
+                    <div class="panel-title">Zodiac Constellations</div>
+                    <div style="max-height: 150px; overflow-y: auto;">
+                        <div class="constellation-item" data-constellation="Aries">Aries (The Ram)</div>
+                        <div class="constellation-item" data-constellation="Taurus">Taurus (The Bull)</div>
+                        <div class="constellation-item" data-constellation="Gemini">Gemini (The Twins)</div>
+                        <div class="constellation-item" data-constellation="Cancer">Cancer (The Crab)</div>
+                        <div class="constellation-item" data-constellation="Leo">Leo (The Lion)</div>
+                        <div class="constellation-item" data-constellation="Virgo">Virgo (The Maiden)</div>
+                        <div class="constellation-item" data-constellation="Libra">Libra (The Scales)</div>
+                        <div class="constellation-item" data-constellation="Scorpius">Scorpius (The Scorpion)</div>
+                        <div class="constellation-item" data-constellation="Sagittarius">Sagittarius (The Archer)</div>
+                        <div class="constellation-item" data-constellation="Capricornus">Capricornus (The Sea Goat)</div>
+                        <div class="constellation-item" data-constellation="Aquarius">Aquarius (The Water Bearer)</div>
+                        <div class="constellation-item" data-constellation="Pisces">Pisces (The Fishes)</div>
+                    </div>
+                </div>
+
+                <!-- Mission Tracker Panel -->
+                <div class="panel">
+                    <div class="panel-title">Space Missions</div>
+                    <div id="mission-tracker" class="panel-content">
+                        <div class="mission-item">
+                            <span>Voyager 1</span>
+                            <span>Beyond Solar System</span>
+                        </div>
+                        <div class="mission-item">
+                            <span>Voyager 2</span>
+                            <span>Interstellar Space</span>
+                        </div>
+                        <div class="mission-item">
+                            <span>New Horizons</span>
+                            <span>Kuiper Belt</span>
+                        </div>
+                        <div class="mission-item">
+                            <span>Parker Solar Probe</span>
+                            <span>Solar Corona</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Comparison Tool Panel -->
+                <div class="panel">
+                    <div class="panel-title">Compare Planets</div>
+                    <div class="comparison-mode">
+                        <div class="comparison-planet" data-planet="Earth">Earth</div>
+                        <div class="comparison-planet" data-planet="Mars">Mars</div>
+                        <div class="comparison-planet" data-planet="Jupiter">Jupiter</div>
+                        <div class="comparison-planet" data-planet="Saturn">Saturn</div>
+                    </div>
+                    <div id="comparison-results" class="panel-content" style="margin-top: 10px; font-size: 11px;"></div>
+                </div>
+            </div>
+            
+            <div id="controls">
+                <button class="control-btn" id="reset-view">Home</button>
+                <button class="control-btn" id="toggle-animation">Pause</button>
+                <button class="control-btn" id="toggle-orbits">Orbits</button>
+                <button class="control-btn" id="toggle-labels">Labels</button>
+                <button class="control-btn" id="toggle-moons">Moons</button>
+            </div>
+        </div>
+        
+        <div class="tooltip" id="tooltip"></div>
+    </div>
+    
+    <script type="module" src="universe.js"></script>
+</body>
+</html>
