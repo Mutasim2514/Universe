@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Solar System Explorer with Zodiac Constellations</title>
+    <link rel="icon" href="s2.png" type="image/png">
+    <title>Solar System Simulation</title>
     <style>
         * {
             margin: 0;
@@ -287,7 +288,7 @@
         <canvas id="solarCanvas"></canvas>
         
         <div id="ui-overlay">
-            <h1 id="title">Enhanced Solar System Explorer</h1>
+            <h1 id="title">Solar System Explorer</h1>
             
             <div id="left-panels">
                 <!-- Search Panel -->
@@ -420,7 +421,4713 @@
         
         <div class="tooltip" id="tooltip"></div>
     </div>
+
+    <script>
+        class EnhancedSolarSystem {
+            constructor() {
+                this.canvas = document.getElementById('solarCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.tooltip = document.getElementById('tooltip');
+                
+                // Enhanced features
+                this.showAsteroids = false;
+                this.showComets = false;
+                this.showSpacecraft = false;
+                this.showDwarfPlanets = false;
+                this.showEllipses = false;
+                this.showBarycenter = false;
+                this.showConstellations = false;
+                this.comparisonPlanets = [];
+                
+                // Scale modes
+                this.scaleMode = 'true-scale';
+                
+                // Viewport settings
+                this.camera = {
+                    x: 0,
+                    y: 0,
+                    zoom: 1,
+                    targetZoom: 1,
+                    targetX: 0,
+                    targetY: 0
+                };
+                
+                // Interaction
+                this.mouse = { x: 0, y: 0, down: false, lastX: 0, lastY: 0 };
+                this.hoveredObject = null;
+                
+                // Animation
+                this.time = 0;
+                this.simulatedDate = new Date();
+                this.animationSpeed = 0.001;
+                this.showOrbits = true;
+                this.showLabels = true;
+                this.showMoons = true;
+                this.animationPaused = false;
+                
+                // Time scaling
+                this.timeScale = 1;
+                this.timeScaleOptions = {
+                    'normal': 0.001,
+                    '1sec-day': 1,
+                    '1sec-week': 7,
+                    '1sec-month': 30
+                };
+                this.currentTimeScale = '1sec-day';
+                
+                // Scale factor for the entire system
+                this.baseScale = 1000000; // 1 pixel = 1 million km
+                
+                this.initCanvas();
+                this.initPlanets();
+                this.initAsteroids();
+                this.initComets();
+                this.initSpacecraft();
+                this.initDwarfPlanets();
+                this.initConstellations();
+                this.initEvents();
+                this.animate();
+            }
+            
+            initCanvas() {
+                this.resizeCanvas();
+                window.addEventListener('resize', () => this.resizeCanvas());
+            }
+            
+            resizeCanvas() {
+                this.canvas.width = window.innerWidth;
+                this.canvas.height = window.innerHeight;
+            }
+            
+            initPlanets() {
+                // Enhanced planet data with orbital elements
+                this.planets = [
+                    {
+                        name: 'Sun',
+                        realRadius: 696340,
+                        realDistance: 0,
+                        speed: 0,
+                        color: '#FDB813',
+                        glowColor: '#FF8C00',
+                        angle: 0,
+                        eccentricity: 0,
+                        type: 'star',
+                        moons: [],
+                        info: {
+                            type: 'G-type Star',
+                            diameter: '1,392,700 km',
+                            mass: '1.989 × 10³⁰ kg',
+                            temperature: '5,778 K',
+                            age: '4.6 billion years'
+                        }
+                    },
+                    {
+                        name: 'Mercury',
+                        realRadius: 2440,
+                        realDistance: 57900000,
+                        speed: 4.1,
+                        color: '#8C7853',
+                        angle: 0,
+                        eccentricity: 0.206, // Most eccentric planet
+                        type: 'terrestrial',
+                        moons: [],
+                          path: {
+                                a: 57900000,
+                                e: 0.2056,
+                                i: 7.0,
+                                omega: 48.331,
+                                w: 29.124
+                              },
+                        info: {
+                            type: 'Terrestrial Planet',
+                            diameter: '4,879 km',
+                            mass: '3.30 × 10²³ kg',
+                            day: '58.6 Earth days',
+                            year: '88 Earth days',
+                            temperature: '-173°C to 427°C'
+                        }
+                    },
+                    {
+                        name: 'Venus',
+                        realRadius: 6052,
+                        realDistance: 108200000,
+                        speed: 1.6,
+                        angle: 0,
+                        color: '#FFC649',
+                        eccentricity: 0.007,
+                        type: 'terrestrial',
+                        moons: [],
+                        path: {
+                              a: 108200000,
+                              e: 0.0068,
+                              i: 3.39,
+                              omega: 76.680,
+                              w: 54.884
+                              },
+                        info: {
+                            type: 'Terrestrial Planet',
+                            diameter: '12,104 km',
+                            mass: '4.87 × 10²⁴ kg',
+                            day: '243 Earth days (retrograde)',
+                            year: '225 Earth days',
+                            temperature: '462°C average'
+                        }
+                    },
+                    {
+                        name: 'Earth',
+                        realRadius: 6371,
+                        realDistance: 149600000,
+                        speed: 1,
+                        angle: 0,
+                        color: '#6B93D6',
+                        secondaryColor: '#4F7942',
+                        eccentricity: 0.017,
+                        type: 'terrestrial',
+                        moons: [
+                            {
+                                name: 'Moon',
+                                realRadius: 1737,
+                                realDistance: 384400,
+                                speed: 13.2,
+                                color: '#C0C0C0',
+                                angle: 0
+                            }
+                        ],
+                        path: {
+                              a: 149600000,
+                              e: 0.0167,
+                              i: 0,
+                              omega: -11.26064,
+                              w: 114.20783
+                              },
+                        info: {
+                            type: 'Terrestrial Planet',
+                            diameter: '12,756 km',
+                            mass: '5.97 × 10²⁴ kg',
+                            day: '24 hours',
+                            year: '365.25 days',
+                            temperature: '-89°C to 58°C'
+                        }
+                    },
+                    {
+                        name: 'Mars',
+                        realRadius: 3390,
+                        realDistance: 227900000,
+                        speed: 0.5,
+                        color: '#CD5C5C',
+                        angle: 0,
+                        eccentricity: 0.093,
+                        type: 'terrestrial',
+                        moons: [
+                            {
+                                name: 'Phobos',
+                                realRadius: 11.3,
+                                realDistance: 9376,
+                                speed: 1126.3,
+                                color: '#8B7355',
+                                angle: 0
+                            },
+                            {
+                                name: 'Deimos',
+                                realRadius: 6.2,
+                                realDistance: 23463,
+                                speed: 285.9,
+                                color: '#696969',
+                                angle: Math.PI
+                            }
+                        ],
+                        path: {
+                            a: 227900000,
+                            e: 0.0935,
+                            i: 1.85,
+                            omega: 49.558,
+                            w: 286.502
+                            },
+                        info: {
+                            type: 'Terrestrial Planet',
+                            diameter: '6,792 km',
+                            mass: '6.42 × 10²³ kg',
+                            day: '24.6 hours',
+                            year: '687 Earth days',
+                            temperature: '-87°C to -5°C'
+                        }
+                    },
+                    {
+    name: 'Jupiter',
+    realRadius: 69911,
+    realDistance: 778500000,
+    speed: 0.08,
+    angle: 0,
+    color: '#D8CA9D',
+    secondaryColor: '#B8860B',
+    eccentricity: 0.049,
+    type: 'gas-giant',
+    moons: (function() {
+        // We'll define moons in groups
+        const moons = [];
+        let angle = 0;
+        const angleIncrement = (Math.PI * 2) / 95; // Distribute 95 moons evenly
+
+        // 1. Inner Moons (Metis, Adrastea, Amalthea, Thebe) - Prograde
+        const innerMoons = [
+            { name: 'Metis', radius: 22, distance: 128000, speed: 1150 },
+            { name: 'Adrastea', radius: 8.2, distance: 129000, speed: 1140 },
+            { name: 'Amalthea', radius: 83.5, distance: 181400, speed: 860 },
+            { name: 'Thebe', radius: 49.3, distance: 221900, speed: 760 }
+        ];
+        innerMoons.forEach(moon => {
+            moons.push({
+                name: moon.name,
+                realRadius: moon.radius,
+                realDistance: moon.distance,
+                speed: moon.speed,
+                color: '#B8860B', // Consistent color for this group
+                angle: angle
+            });
+            angle += angleIncrement;
+        });
+
+        // 2. Galilean Moons (Io, Europa, Ganymede, Callisto) - Prograde
+        const galileanMoons = [
+            { name: 'Io', radius: 1821.6, distance: 421700, speed: 17.3, color: '#FFFF99' },
+            { name: 'Europa', radius: 1560.8, distance: 671034, speed: 13.7, color: '#B0E0E6' },
+            { name: 'Ganymede', radius: 2634.1, distance: 1070412, speed: 10.9, color: '#A0A0A0' },
+            { name: 'Callisto', radius: 2410.3, distance: 1882709, speed: 8.2, color: '#808080' }
+        ];
+        galileanMoons.forEach(moon => {
+            moons.push({
+                name: moon.name,
+                realRadius: moon.radius,
+                realDistance: moon.distance,
+                speed: moon.speed,
+                color: moon.color,
+                angle: angle
+            });
+            angle += angleIncrement;
+        });
+
+        // 3. Himalia Group (Prograde) - Largest group of irregular prograde moons
+        const himaliaGroup = [
+            { name: 'Himalia', radius: 67, distance: 11460000, speed: 1.0 },
+            { name: 'Leda', radius: 10.8, distance: 11165000, speed: 1.1 },
+            { name: 'Ersa', radius: 1.5, distance: 11484000, speed: 1.0 },
+            { name: 'S/2018 J 2', radius: 1.5, distance: 11480000, speed: 1.0 },
+            { name: 'Pandia', radius: 1.5, distance: 11481000, speed: 1.0 },
+            { name: 'Lysithea', radius: 21.5, distance: 11717000, speed: 0.9 },
+            { name: 'Elara', radius: 43, distance: 11741000, speed: 0.9 },
+            { name: 'Dia', radius: 2.5, distance: 12267000, speed: 0.8 },
+            { name: 'S/2018 J 4', radius: 1.5, distance: 16331000, speed: 0.6 }
+        ];
+        himaliaGroup.forEach(moon => {
+            moons.push({
+                name: moon.name,
+                realRadius: moon.radius,
+                realDistance: moon.distance * 0.8, // Scale for visibility
+                speed: moon.speed,
+                color: '#8FBC8F', // Dark Sea Green
+                angle: angle
+            });
+            angle += angleIncrement;
+        });
+
+        // 4. Carpo/Valetudo (Isolated Prograde)
+        moons.push({ name: 'Carpo', realRadius: 1.5, realDistance: 17050000, speed: 0.7, color: '#98FB98', angle: angle }); // Pale Green
+        angle += angleIncrement;
+        moons.push({ name: 'Valetudo', realRadius: 0.5, realDistance: 18700000, speed: 0.6, color: '#98FB98', angle: angle });
+        angle += angleIncrement;
+
+        // 5. Ananke Group (Retrograde) - Core members
+        const anankeGroupCore = [
+            { name: 'Ananke', radius: 14, distance: 21276000, speed: -0.5 },
+            { name: 'Euporie', radius: 1, distance: 19302000, speed: -0.6 },
+            { name: 'Eupheme', radius: 1, distance: 20465000, speed: -0.5 },
+            { name: 'S/2021 J 3', radius: 1, distance: 20524000, speed: -0.5 },
+            { name: 'S/2021 J 1', radius: 0.8, distance: 20567000, speed: -0.5 },
+            { name: 'S/2010 J 2', radius: 0.5, distance: 20307000, speed: -0.5 },
+            { name: 'S/2003 J 18', radius: 1.5, distance: 20339000, speed: -0.5 },
+            { name: 'S/2021 J 5', radius: 1, distance: 21248000, speed: -0.5 },
+            { name: 'S/2016 J 1', radius: 1, distance: 20605000, speed: -0.5 },
+            { name: 'Mneme', radius: 1, distance: 21129000, speed: -0.5 },
+            { name: 'Euanthe', radius: 1.5, distance: 20798000, speed: -0.5 },
+            { name: 'S/2003 J 16', radius: 1, distance: 20739000, speed: -0.5 },
+            { name: 'Harpalyke', radius: 2.2, distance: 21165000, speed: -0.5 },
+            { name: 'Orthosie', radius: 1, distance: 20770000, speed: -0.5 },
+            { name: 'Helike', radius: 2, distance: 21263000, speed: -0.5 },
+            { name: 'Praxidike', radius: 3.5, distance: 20970000, speed: -0.5 },
+            { name: 'S/2017 J 3', radius: 1, distance: 20790000, speed: -0.5 },
+            { name: 'S/2017 J 7', radius: 1, distance: 20257000, speed: -0.5 },
+            { name: 'S/2003 J 12', radius: 0.5, distance: 17824000, speed: -0.6 },
+            { name: 'Thelxinoe', radius: 1, distance: 21162000, speed: -0.5 },
+            { name: 'Thyone', radius: 2, distance: 20940000, speed: -0.5 },
+            { name: 'S/2003 J 2', radius: 1, distance: 28507000, speed: -0.4 } // Distant outlier
+        ];
+        anankeGroupCore.forEach(moon => {
+            moons.push({
+                name: moon.name,
+                realRadius: moon.radius,
+                realDistance: moon.distance * 0.5, // Scale for visibility
+                speed: moon.speed, // Negative for retrograde
+                color: '#FF6347', // Tomato
+                angle: angle
+            });
+            angle += angleIncrement;
+        });
+
+        // 6. Carme Group (Retrograde)
+        const carmeGroup = [
+            { name: 'Carme', radius: 23, distance: 23404000, speed: -0.4 },
+            { name: 'Taygete', radius: 2.5, distance: 23360000, speed: -0.4 },
+            { name: 'S/2017 J 9', radius: 1, distance: 21485000, speed: -0.5 },
+            { name: 'S/2017 J 6', radius: 1, distance: 22725000, speed: -0.4 },
+            { name: 'S/2011 J 1', radius: 0.5, distance: 20155000, speed: -0.6 },
+            { name: 'S/2003 J 24', radius: 1.5, distance: 23065000, speed: -0.4 },
+            { name: 'Erinome', radius: 1.6, distance: 23280000, speed: -0.4 },
+            { name: 'Aitne', radius: 1.5, distance: 23231000, speed: -0.4 },
+            { name: 'Eukelade', radius: 2, distance: 23320000, speed: -0.4 },
+            { name: 'Kale', radius: 1, distance: 23217000, speed: -0.4 },
+            { name: 'Isonoe', radius: 1.9, distance: 23155000, speed: -0.4 },
+            { name: 'S/2003 J 9', radius: 0.5, distance: 23507000, speed: -0.4 },
+            { name: 'S/2003 J 5', radius: 2, distance: 23570000, speed: -0.4 },
+            { name: 'S/2017 J 2', radius: 1, distance: 23080000, speed: -0.4 },
+            { name: 'S/2017 J 5', radius: 1, distance: 23270000, speed: -0.4 },
+            { name: 'S/2017 J 8', radius: 0.5, distance: 23210000, speed: -0.4 },
+            { name: 'Chaldene', radius: 1.9, distance: 23200000, speed: -0.4 },
+            { name: 'S/2011 J 2', radius: 0.5, distance: 23450000, speed: -0.4 },
+            { name: 'Herse', radius: 1, distance: 22970000, speed: -0.4 },
+            { name: 'S/2003 J 10', radius: 1, distance: 23040000, speed: -0.4 },
+            { name: 'S/2003 J 23', radius: 1, distance: 23975000, speed: -0.4 },
+            { name: 'Arche', radius: 1.5, distance: 22931000, speed: -0.4 },
+            { name: 'S/2016 J 3', radius: 1, distance: 22830000, speed: -0.4 }
+        ];
+        carmeGroup.forEach(moon => {
+            moons.push({
+                name: moon.name,
+                realRadius: moon.radius,
+                realDistance: moon.distance * 0.5, // Scale for visibility
+                speed: moon.speed, // Negative for retrograde
+                color: '#9370DB', // Medium Purple
+                angle: angle
+            });
+            angle += angleIncrement;
+        });
+
+        // 7. Pasiphae Group (Retrograde)
+        const pasiphaeGroup = [
+            { name: 'Pasiphae', radius: 30, distance: 23624000, speed: -0.4 },
+            { name: 'S/2017 J 1', radius: 1, distance: 23450000, speed: -0.4 },
+            { name: 'S/2003 J 4', radius: 1, distance: 23963000, speed: -0.4 },
+            { name: 'S/2016 J 4', radius: 0.8, distance: 23695000, speed: -0.4 },
+            { name: 'S/2018 J 1', radius: 1.5, distance: 23721000, speed: -0.4 },
+            { name: 'Sinope', radius: 19, distance: 23939000, speed: -0.4 },
+            { name: 'Sponde', radius: 1, distance: 23810000, speed: -0.4 },
+            { name: 'Autonoe', radius: 2, distance: 23804000, speed: -0.4 },
+            { name: 'Megaclite', radius: 2.7, distance: 23806000, speed: -0.4 },
+            { name: 'S/2003 J 19', radius: 1, distance: 23708000, speed: -0.4 },
+            { name: 'S/2010 J 1', radius: 1, distance: 23314000, speed: -0.4 },
+            { name: 'Callirrhoe', radius: 4.3, distance: 24102000, speed: -0.4 },
+            { name: 'S/2011 J 1', radius: 0.5, distance: 20155000, speed: -0.6 }, // Sometimes listed here
+            { name: 'Cyllene', radius: 1, distance: 24350000, speed: -0.4 },
+            { name: 'Aoede', radius: 2, distance: 23981000, speed: -0.4 },
+            { name: 'S/2003 J 15', radius: 1, distance: 22100000, speed: -0.5 },
+            { name: 'S/2003 J 17', radius: 1, distance: 22610000, speed: -0.4 },
+            { name: 'Kore', radius: 1, distance: 24930000, speed: -0.3 },
+            { name: 'S/2003 J 14', radius: 1, distance: 23900000, speed: -0.4 },
+            { name: 'S/2018 J 3', radius: 0.8, distance: 22530000, speed: -0.5 },
+            { name: 'S/2021 J 2', radius: 0.8, distance: 20587000, speed: -0.5 },
+            { name: 'S/2021 J 4', radius: 0.8, distance: 23073000, speed: -0.4 },
+            { name: 'S/2022 J 1', radius: 0.8, distance: 22000000, speed: -0.5 },
+            { name: 'S/2022 J 2', radius: 0.8, distance: 19500000, speed: -0.6 },
+            { name: 'S/2022 J 3', radius: 0.8, distance: 21000000, speed: -0.5 }
+        ];
+        pasiphaeGroup.forEach(moon => {
+            moons.push({
+                name: moon.name,
+                realRadius: moon.radius,
+                realDistance: moon.distance * 0.5, // Scale for visibility
+                speed: moon.speed, // Negative for retrograde
+                color: '#DA70D6', // Orchid
+                angle: angle
+            });
+            angle += angleIncrement;
+        });
+
+        // Final check to ensure we have exactly 95 moons
+        // console.log("Total Jupiter moons generated: " + moons.length);
+        return moons;
+    })(), // Immediately invoke the function to populate the array
+    path: {
+                a: 778500000,
+                e: 0.0489,
+                i: 1.30,
+                omega: 100.464,
+                w: 273.867
+            },
+    info: {
+        type: 'Gas Giant',
+        diameter: '142,984 km',
+        mass: '1.90 × 10²⁷ kg',
+        day: '9.9 hours',
+        year: '11.9 Earth years',
+        moons: '95+ known'
+    }
+},
+{
+                        name: 'Saturn',
+                        realRadius: 58232,
+                        realDistance: 1432000000,
+                        speed: 0.03,
+                        angle: 0,
+                        color: '#FAD5A5',
+                        hasRings: true,
+                        eccentricity: 0.057,
+                        type: 'gas-giant',
+                        // Saturn moons array - following Jupiter's pattern
+// Saturn has 274 confirmed moons as of 2025, but we'll focus on major ones and representatives
+moons: (function() {
+    const moons = [];
+    let angle = 0;
+    const angleIncrement = (Math.PI * 2) / 83; // Distribute across 83 representative moons
+
+    // 1. Inner Small Moons (Ring shepherds and co-orbitals)
+    const innerMoons = [
+        { name: 'S/2009 S 1', radius: 0.15, distance: 117000, speed: 2200, color: '#888888' }, // Ring moonlet
+        { name: 'Pan', radius: 14, distance: 133584, speed: 1950, color: '#D2B48C' }, // Ring shepherd
+        { name: 'Daphnis', radius: 3.8, distance: 136505, speed: 1890, color: '#CD853F' }, // Ring shepherd  
+        { name: 'Atlas', radius: 15, distance: 137670, speed: 1850, color: '#DEB887' }, // Ring shepherd
+        { name: 'Prometheus', radius: 43, distance: 139380, speed: 1800, color: '#DAA520' }, // Ring shepherd
+        { name: 'Pandora', radius: 40.7, distance: 141720, speed: 1750, color: '#B8860B' }, // Ring shepherd
+        { name: 'Epimetheus', radius: 58.1, distance: 151422, speed: 1640, color: '#CD853F' }, // Co-orbital with Janus
+        { name: 'Janus', radius: 89.5, distance: 151472, speed: 1640, color: '#D2B48C' }, // Co-orbital with Epimetheus
+        { name: 'Aegaeon', radius: 0.33, distance: 167500, speed: 1450, color: '#696969' }, // Arc moonlet
+        { name: 'Mimas', radius: 198.2, distance: 185539, speed: 1270, color: '#C0C0C0' }, // Major inner moon
+        { name: 'Methone', radius: 1.45, distance: 194440, speed: 1200, color: '#778899' }, // Alkyonides group
+        { name: 'Anthe', radius: 0.9, distance: 197665, speed: 1180, color: '#778899' }, // Alkyonides group
+        { name: 'Pallene', radius: 2.2, distance: 212280, speed: 1110, color: '#778899' } // Alkyonides group
+    ];
+    innerMoons.forEach(moon => {
+        moons.push({
+            name: moon.name,
+            realRadius: moon.radius,
+            realDistance: moon.distance,
+            speed: moon.speed,
+            color: moon.color,
+            angle: angle
+        });
+        angle += angleIncrement;
+    });
+
+    // 2. Major Regular Moons (Classical satellites)
+    const majorMoons = [
+        { name: 'Enceladus', radius: 252.1, distance: 238020, speed: 1050, color: '#F0F8FF' }, // Ice geysers
+        { name: 'Tethys', radius: 531.1, distance: 294672, speed: 890, color: '#E6E6FA' }, // Classical moon
+        { name: 'Calypso', radius: 10.7, distance: 294672, speed: 890, color: '#9370DB' }, // Tethys Trojan L5
+        { name: 'Telesto', radius: 12.4, distance: 294672, speed: 890, color: '#8A2BE2' }, // Tethys Trojan L4
+        { name: 'Dione', radius: 561.4, distance: 377415, speed: 730, color: '#D8BFD8' }, // Classical moon
+        { name: 'Helene', radius: 17.6, distance: 377415, speed: 730, color: '#9932CC' }, // Dione Trojan L4
+        { name: 'Polydeuces', radius: 0.7, distance: 377415, speed: 730, color: '#8B008B' }, // Dione Trojan L5
+        { name: 'Rhea', radius: 763.8, distance: 527108, speed: 550, color: '#C8C8C8' }, // Classical moon
+        { name: 'Titan', radius: 2574, distance: 1221830, speed: 220, color: '#FFA500' }, // Largest moon
+        { name: 'Iapetus', radius: 734.5, distance: 3561300, speed: 79, color: '#2F4F4F' } // Two-tone coloration
+    ];
+    majorMoons.forEach(moon => {
+        moons.push({
+            name: moon.name,
+            realRadius: moon.radius,
+            realDistance: moon.distance,
+            speed: moon.speed,
+            color: moon.color,
+            angle: angle
+        });
+        angle += angleIncrement;
+    });
+
+    // 3. Inuit Group (Prograde irregulars)
+    const inuitGroup = [
+        { name: 'Kiviuq', radius: 8, distance: 11365000, speed: 1.1, color: '#4682B4' },
+        { name: 'Ijiraq', radius: 6, distance: 11440000, speed: 1.1, color: '#4682B4' },
+        { name: 'Paaliaq', radius: 11, distance: 15200000, speed: 0.9, color: '#5F9EA0' },
+        { name: 'Siarnaq', radius: 20, distance: 18015000, speed: 0.8, color: '#6495ED' },
+        { name: 'Tarqeq', radius: 3.5, distance: 18009000, speed: 0.8, color: '#4682B4' }
+    ];
+    inuitGroup.forEach(moon => {
+        moons.push({
+            name: moon.name,
+            realRadius: moon.radius,
+            realDistance: moon.distance * 0.6, // Scale for visibility
+            speed: moon.speed,
+            color: moon.color,
+            angle: angle
+        });
+        angle += angleIncrement;
+    });
+
+    // 4. Gallic Group (Prograde irregulars) 
+    const gallicGroup = [
+        { name: 'Albiorix', radius: 16, distance: 16404000, speed: 0.9, color: '#228B22' },
+        { name: 'Bebhionn', radius: 3, distance: 17119000, speed: 0.8, color: '#32CD32' },
+        { name: 'Erriapus', radius: 5, distance: 17343000, speed: 0.8, color: '#90EE90' },
+        { name: 'Tarvos', radius: 7.5, distance: 17983000, speed: 0.8, color: '#9ACD32' }
+    ];
+    gallicGroup.forEach(moon => {
+        moons.push({
+            name: moon.name,
+            realRadius: moon.radius,
+            realDistance: moon.distance * 0.6, // Scale for visibility
+            speed: moon.speed,
+            color: moon.color,
+            angle: angle
+        });
+        angle += angleIncrement;
+    });
+
+    // 5. Norse Group (Retrograde irregulars) - Largest group
+    const norseGroup = [
+        { name: 'Phoebe', radius: 106.5, distance: 12947000, speed: -0.9, color: '#8B0000' }, // Largest retrograde
+        { name: 'Skathi', radius: 4, distance: 15541000, speed: -0.9, color: '#A52A2A' },
+        { name: 'Ymir', radius: 9, distance: 23040000, speed: -0.6, color: '#B22222' },
+        { name: 'Mundilfari', radius: 3.5, distance: 18628000, speed: -0.8, color: '#CD5C5C' },
+        { name: 'Suttungr', radius: 3.5, distance: 19459000, speed: -0.8, color: '#DC143C' },
+        { name: 'Thrymr', radius: 3.5, distance: 20314000, speed: -0.7, color: '#FF6347' },
+        { name: 'Narvi', radius: 3.5, distance: 19007000, speed: -0.8, color: '#FF4500' },
+        { name: 'Bestla', radius: 3.5, distance: 20192000, speed: -0.7, color: '#FF7F50' },
+        { name: 'Farbauti', radius: 2.5, distance: 20390000, speed: -0.7, color: '#FFA07A' },
+        { name: 'Hyrrokkin', radius: 4, distance: 18437000, speed: -0.8, color: '#FA8072' },
+        { name: 'Kari', radius: 3.5, distance: 22089000, speed: -0.7, color: '#E9967A' },
+        { name: 'Fenrir', radius: 2, distance: 22454000, speed: -0.7, color: '#F4A460' },
+        { name: 'Surtur', radius: 3, distance: 22707000, speed: -0.7, color: '#D2691E' },
+        { name: 'Loge', radius: 3, distance: 23058000, speed: -0.6, color: '#CD853F' },
+        { name: 'Fornjot', radius: 3, distance: 25146000, speed: -0.6, color: '#A0522D' },
+        { name: 'Aegir', radius: 3, distance: 20735000, speed: -0.7, color: '#8B4513' },
+        { name: 'Bergelmir', radius: 3, distance: 19336000, speed: -0.8, color: '#D2B48C' },
+        { name: 'Hati', radius: 3, distance: 19856000, speed: -0.8, color: '#DEB887' },
+        { name: 'Jarnsaxa', radius: 3, distance: 18811000, speed: -0.8, color: '#F5DEB3' },
+        { name: 'Greip', radius: 3, distance: 18206000, speed: -0.8, color: '#FFEFD5' }
+    ];
+    norseGroup.forEach(moon => {
+        moons.push({
+            name: moon.name,
+            realRadius: moon.radius,
+            realDistance: moon.distance * 0.5, // Scale for visibility
+            speed: moon.speed, // Negative for retrograde
+            color: moon.color,
+            angle: angle
+        });
+        angle += angleIncrement;
+    });
+
+    // 6. Additional Recent Discoveries (Mixed groups)
+    const recentMoons = [
+        // More Norse group members
+        { name: 'Skoll', radius: 3, distance: 17665000, speed: -0.8, color: '#FFE4E1' },
+        { name: 'Angrboda', radius: 3, distance: 19300000, speed: -0.8, color: '#MISTYROSE' },
+        { name: 'Eggther', radius: 3, distance: 20735000, speed: -0.7, color: '#FFDAB9' },
+        { name: 'Beli', radius: 3, distance: 19336000, speed: -0.8, color: '#PEACHPUFF' },
+        { name: 'Gunnlod', radius: 2.5, distance: 18685000, speed: -0.8, color: '#NAVAJOWHITE' },
+        { name: 'Thiazzi', radius: 3, distance: 19800000, speed: -0.8, color: '#MOCCASIN' },
+        { name: 'Alvaldi', radius: 3, distance: 18500000, speed: -0.8, color: '#WHEAT' },
+        { name: 'Gerd', radius: 3, distance: 18200000, speed: -0.8, color: '#BURLYWOOD' },
+        
+        // Some of the newest discoveries (S/2004, S/2006, S/2007 series)
+        { name: 'S/2004 S 7', radius: 3, distance: 20999000, speed: -0.7, color: '#BC8F8F' },
+        { name: 'S/2004 S 12', radius: 2.5, distance: 19905000, speed: -0.8, color: '#F5F5DC' },
+        { name: 'S/2004 S 13', radius: 3, distance: 18450000, speed: -0.8, color: '#FFE4B5' },
+        { name: 'S/2004 S 17', radius: 2, distance: 18600000, speed: -0.8, color: '#DDBEA9' },
+        { name: 'S/2006 S 1', radius: 3, distance: 18981000, speed: -0.8, color: '#D2B48C' },
+        { name: 'S/2006 S 3', radius: 3, distance: 22096000, speed: -0.7, color: '#F4A460' },
+        { name: 'S/2007 S 2', radius: 3, distance: 16725000, speed: -0.9, color: '#DAA520' },
+        { name: 'S/2007 S 3', radius: 2.5, distance: 20518000, speed: -0.7, color: '#B8860B' },
+        
+        // Sample of very recent 2019-2021 discoveries
+        { name: 'S/2019 S 1', radius: 2.5, distance: 11400000, speed: 1.1, color: '#556B2F' }, // Inuit-like
+        { name: 'S/2019 S 6', radius: 2, distance: 18932000, speed: -0.8, color: '#8FBC8F' }, // Norse
+        { name: 'S/2019 S 15', radius: 2.5, distance: 25108000, speed: -0.6, color: '#9ACD32' }, // Distant Norse
+        { name: 'S/2020 S 1', radius: 2.5, distance: 17500000, speed: -0.8, color: '#ADFF2F' }, // Norse
+        { name: 'S/2020 S 5', radius: 1.5, distance: 11380000, speed: 1.1, color: '#98FB98' } // Inuit-like
+    ];
+    recentMoons.forEach(moon => {
+        moons.push({
+            name: moon.name,
+            realRadius: moon.radius,
+            realDistance: moon.distance * 0.5, // Scale for visibility
+            speed: moon.speed,
+            color: moon.color,
+            angle: angle
+        });
+        angle += angleIncrement;
+    });
+
+    // console.log("Total Saturn moons generated: " + moons.length);
+    return moons;
+})(), // Immediately invoke the function to populate the array
+path: {
+                a: 1434000000,
+                e: 0.0565,
+                i: 2.49,
+                omega: 113.665,
+                w: 339.392
+            },
+                        info: {
+                            type: 'Gas Giant',
+                            diameter: '120,536 km',
+                            mass: '5.68 × 10²⁶ kg',
+                            day: '10.7 hours',
+                            year: '29.4 Earth years',
+                            moons: '146+ known'
+                        }
+                    },
+                    {
+                        name: 'Uranus',
+                        realRadius: 25362,
+                        angle: 0,
+                        realDistance: 2867000000,
+                        speed: 0.01,
+                        color: '#4FD0E4',
+                        angle: Math.PI * 0.1,
+                        eccentricity: 0.046,
+                        type: 'ice-giant',
+                        axialTilt: 98, // Nearly sideways!
+                        path: {
+                a: 2871000000,
+                e: 0.0457,
+                i: 0.77,
+                omega: 74.006,
+                w: 96.998857
+            },
+                        moons: [
+                            {
+            name: 'Cordelia',
+            realRadius: 20,
+            realDistance: 49770,
+            speed: 1120,
+            color: '#A0A0A0',
+            angle: 0
+        },
+        {
+            name: 'Ophelia',
+            realRadius: 21,
+            realDistance: 53790,
+            speed: 1050,
+            color: '#A0A0A0',
+            angle: Math.PI * 0.2
+        },
+        {
+            name: 'Bianca',
+            realRadius: 25,
+            realDistance: 59170,
+            speed: 970,
+            color: '#A0A0A0',
+            angle: Math.PI * 0.4
+        },
+        {
+            name: 'Cressida',
+            realRadius: 39,
+            realDistance: 61770,
+            speed: 930,
+            color: '#A0A0A0',
+            angle: Math.PI * 0.6
+        },
+        {
+            name: 'Desdemona',
+            realRadius: 32,
+            realDistance: 62680,
+            speed: 920,
+            color: '#A0A0A0',
+            angle: Math.PI * 0.8
+        },
+        {
+            name: 'Juliet',
+            realRadius: 46,
+            realDistance: 64350,
+            speed: 900,
+            color: '#A0A0A0',
+            angle: Math.PI
+        },
+        {
+            name: 'Portia',
+            realRadius: 67,
+            realDistance: 66090,
+            speed: 880,
+            color: '#C8C8C8',
+            angle: Math.PI * 1.2
+        },
+        {
+            name: 'Rosalind',
+            realRadius: 36,
+            realDistance: 69940,
+            speed: 835,
+            color: '#A0A0A0',
+            angle: Math.PI * 1.4
+        },
+        {
+            name: 'Cupid',
+            realRadius: 9,
+            realDistance: 74390,
+            speed: 780,
+            color: '#888888',
+            angle: Math.PI * 1.6
+        },
+        {
+            name: 'Belinda',
+            realRadius: 40,
+            realDistance: 75260,
+            speed: 770,
+            color: '#A0A0A0',
+            angle: Math.PI * 1.8
+        },
+        {
+            name: 'Perdita',
+            realRadius: 15,
+            realDistance: 76420,
+            speed: 760,
+            color: '#888888',
+            angle: Math.PI * 0.1
+        },
+        {
+            name: 'Puck',
+            realRadius: 81,
+            realDistance: 86010,
+            speed: 700,
+            color: '#C8C8C8',
+            angle: Math.PI * 0.3
+        },
+        {
+            name: 'Mab',
+            realRadius: 12,
+            realDistance: 97740,
+            speed: 630,
+            color: '#888888',
+            angle: Math.PI * 0.5
+        },
+        {
+            name: 'Miranda',
+            realRadius: 235.8,
+            realDistance: 129390,
+            speed: 20.8,
+            color: '#BC8F8F',
+            angle: Math.PI * 1.6
+        },
+        {
+            name: 'Ariel',
+            realRadius: 578.9,
+            realDistance: 191020,
+            speed: 12.5,
+            color: '#D3D3D3',
+            angle: Math.PI * 0.7
+        },
+        {
+            name: 'Umbriel',
+            realRadius: 584.7,
+            realDistance: 266300,
+            speed: 8.4,
+            color: '#696969',
+            angle: Math.PI * 1.9
+        },
+        {
+            name: 'Titania',
+            realRadius: 788.4,
+            realDistance: 436300,
+            speed: 4.7,
+            color: '#C0C0C0',
+            angle: 0
+        },
+        {
+            name: 'Oberon',
+            realRadius: 761.4,
+            realDistance: 583500,
+            speed: 3.5,
+            color: '#A9A9A9',
+            angle: Math.PI * 0.5
+        },
+        {
+            name: 'Francisco',
+            realRadius: 11,
+            realDistance: 4276000,
+            speed: -1.4, // retrograde
+            color: '#555555',
+            angle: Math.PI * 0.25
+        },
+        {
+            name: 'Caliban',
+            realRadius: 21,
+            realDistance: 7230000,
+            speed: -1.1, // retrograde
+            color: '#555555',
+            angle: Math.PI * 0.75
+        },
+        {
+            name: 'Stephano',
+            realRadius: 16,
+            realDistance: 8007000,
+            speed: -1.1, // retrograde
+            color: '#555555',
+            angle: Math.PI * 1.25
+        },
+        {
+            name: 'Trinculo',
+            realRadius: 9,
+            realDistance: 8504000,
+            speed: -1.0, // retrograde
+            color: '#555555',
+            angle: Math.PI * 1.75
+        },
+        {
+            name: 'Sycorax',
+            realRadius: 75,
+            realDistance: 12179000,
+            speed: -0.8, // retrograde
+            color: '#777777',
+            angle: Math.PI * 0.15
+        },
+        {
+            name: 'Margaret',
+            realRadius: 10,
+            realDistance: 14345000,
+            speed: 0.9,
+            color: '#555555',
+            angle: Math.PI * 0.65
+        },
+        {
+            name: 'Prospero',
+            realRadius: 25,
+            realDistance: 16256000,
+            speed: -0.7, // retrograde
+            color: '#555555',
+            angle: Math.PI * 1.15
+        },
+        {
+            name: 'Setebos',
+            realRadius: 24,
+            realDistance: 17418000,
+            speed: -0.6, // retrograde
+            color: '#555555',
+            angle: Math.PI * 1.65
+        },
+        {
+            name: 'Ferdinand',
+            realRadius: 10,
+            realDistance: 20900000,
+            speed: -0.5, // retrograde
+            color: '#555555',
+            angle: Math.PI * 0.35
+        }
+                        ],
+                        info: {
+                            type: 'Ice Giant',
+                            diameter: '51,118 km',
+                            mass: '8.68 × 10²⁵ kg',
+                            day: '17.2 hours',
+                            year: '84 Earth years',
+                            axialTilt: '98°'
+                        }
+                    },
+                    {
+                        name: 'Neptune',
+                        realRadius: 24622,
+                        realDistance: 4515000000,
+                        speed: 0.006,
+                        angle: 0,
+                        color: '#4B70DD',
+                        angle: Math.PI * 0.8,
+                        eccentricity: 0.009,
+                        type: 'ice-giant',
+                        path: {
+                a: 4495000000,
+                e: 0.0113,
+                i: 1.77,
+                omega: 131.784,
+                w: 276.336
+            },
+                        moons: [
+                            {
+            name: 'Naiad',
+            realRadius: 33,
+            realDistance: 48227,
+            speed: 1257,
+            color: '#A0A0A0',
+            angle: 0
+        },
+        {
+            name: 'Thalassa',
+            realRadius: 41,
+            realDistance: 50075,
+            speed: 1215,
+            color: '#A0A0A0',
+            angle: Math.PI * 0.25
+        },
+        {
+            name: 'Despina',
+            realRadius: 75,
+            realDistance: 52526,
+            speed: 1165,
+            color: '#C8C8C8',
+            angle: Math.PI * 0.5
+        },
+        {
+            name: 'Galatea',
+            realRadius: 88,
+            realDistance: 61953,
+            speed: 1055,
+            color: '#C8C8C8',
+            angle: Math.PI * 0.75
+        },
+        {
+            name: 'Larissa',
+            realRadius: 97,
+            realDistance: 73548,
+            speed: 930,
+            color: '#C8C8C8',
+            angle: Math.PI
+        },
+        {
+            name: 'Hippocamp',
+            realRadius: 17,
+            realDistance: 105283,
+            speed: 770,
+            color: '#888888',
+            angle: Math.PI * 1.25
+        },
+        {
+            name: 'Proteus',
+            realRadius: 210,
+            realDistance: 117647,
+            speed: 690,
+            color: '#A9A9A9',
+            angle: Math.PI * 1.5
+        },
+        {
+            name: 'Triton',
+            realRadius: 1353.4,
+            realDistance: 354759,
+            speed: -15.9, // retrograde
+            color: '#F5F5DC',
+            angle: 0
+        },
+        {
+            name: 'Nereid',
+            realRadius: 170,
+            realDistance: 5513400,
+            speed: 0.94,
+            color: '#A9A9A9',
+            angle: Math.PI * 0.3
+        },
+        {
+            name: 'Halimede',
+            realRadius: 31,
+            realDistance: 15728000,
+            speed: -0.57, // retrograde
+            color: '#777777',
+            angle: Math.PI * 0.6
+        },
+        {
+            name: 'Sao',
+            realRadius: 22,
+            realDistance: 22422000,
+            speed: 0.47,
+            color: '#777777',
+            angle: Math.PI * 0.9
+        },
+        {
+            name: 'Laomedeia',
+            realRadius: 21,
+            realDistance: 23571000,
+            speed: 0.45,
+            color: '#777777',
+            angle: Math.PI * 1.2
+        },
+        {
+            name: 'Psamathe',
+            realRadius: 20,
+            realDistance: 46695000,
+            speed: -0.24, // retrograde
+            color: '#777777',
+            angle: Math.PI * 1.5
+        },
+        {
+            name: 'Neso',
+            realRadius: 30,
+            realDistance: 48387000,
+            speed: -0.23, // retrograde
+            color: '#777777',
+            angle: Math.PI * 1.8
+        }
+                        ],
+                        info: {
+                            type: 'Ice Giant',
+                            diameter: '49,528 km',
+                            mass: '1.02 × 10²⁶ kg',
+                            day: '16.1 hours',
+                            year: '165 Earth years',
+                            windSpeed: '2,100 km/h'
+                        }
+                    }
+                ];
+            }
+
+            initAsteroids() {
+                this.asteroids = [
+                    { name: 'Ceres', realRadius: 473, realDistance: 413700000, speed: 0.15, color: '#C0C0C0', angle: 0, type: 'asteroid' },
+                    { name: 'Vesta', realRadius: 262.7, realDistance: 353400000, speed: 0.19, color: '#8C7853', angle: Math.PI * 0.3, type: 'asteroid' },
+                    { name: 'Pallas', realRadius: 256, realDistance: 414500000, speed: 0.14, color: '#A0A0A0', angle: Math.PI * 0.7, type: 'asteroid' },
+                    { name: 'Hygiea', realRadius: 217, realDistance: 470300000, speed: 0.11, color: '#696969', angle: Math.PI * 1.2, type: 'asteroid' }
+                ];
+
+                // Generate belt asteroids
+                for (let i = 0; i < 500; i++) {
+                    const distance = 280000000 + Math.random() * 200000000; // 2.8 - 4.8 AU
+                    this.asteroids.push({
+                        name: `Asteroid ${i + 5}`,
+                        realRadius: 0.5 + Math.random() * 10,
+                        realDistance: distance,
+                        speed: 0.1 + Math.random() * 0.1,
+                        color: '#666666',
+                        angle: Math.random() * Math.PI * 2,
+                        type: 'asteroid'
+                    });
+                }
+            }
+
+initComets() {
+    this.comets = [
+        {
+            name: "Halley's Comet",
+            realRadius: 5.5,
+            perihelion: 87700000, // closest to Sun (km)
+            aphelion: 5250000000, // farthest from Sun (km)
+            period: 76, // years
+            eccentricity: 0.967,
+            speed: 0.013,
+            color: '#87CEEB',
+            angle: 0,
+            type: 'comet',
+            info: {
+                type: 'Periodic Comet',
+                period: '76 years',
+                lastPerihelion: '1986',
+                nextPerihelion: '2061',
+                nucleus: '15 × 8 × 8 km',
+                discovered: '240 BC (first recorded)',
+                significance: 'Most famous periodic comet'
+            }
+        },
+        {
+            name: 'Comet NEOWISE',
+            realRadius: 2.5,
+            perihelion: 43000000,
+            aphelion: 71500000000,
+            period: 6800,
+            eccentricity: 0.999,
+            speed: 0.0001,
+            color: '#ADD8E6',
+            angle: Math.PI * 0.4,
+            type: 'comet',
+            info: {
+                type: 'Long-period Comet',
+                period: '6,800 years',
+                lastPerihelion: '2020',
+                nextPerihelion: '~8820 AD',
+                nucleus: '5 km diameter',
+                discovered: '2020',
+                significance: 'Brightest comet of 2020, visible to naked eye'
+            }
+        },
+        {
+            name: 'Comet Hale-Bopp',
+            realRadius: 30,
+            perihelion: 137000000,
+            aphelion: 52500000000,
+            period: 2533,
+            eccentricity: 0.995,
+            speed: 0.0002,
+            color: '#E6E6FA',
+            angle: Math.PI * 0.8,
+            type: 'comet',
+            info: {
+                type: 'Long-period Comet',
+                period: '2,533 years',
+                lastPerihelion: '1997',
+                nextPerihelion: '4380',
+                nucleus: '60 km diameter',
+                discovered: '1995',
+                significance: 'One of the brightest comets of 20th century'
+            }
+        },
+        {
+            name: 'Comet Hyakutake',
+            realRadius: 2,
+            perihelion: 35700000,
+            aphelion: 110000000000,
+            period: 17000,
+            eccentricity: 0.9998,
+            speed: 0.00005,
+            color: '#AFEEEE',
+            angle: Math.PI * 1.2,
+            type: 'comet',
+            info: {
+                type: 'Long-period Comet',
+                period: '17,000 years',
+                lastPerihelion: '1996',
+                nextPerihelion: '~19,000 AD',
+                nucleus: '4.2 km diameter',
+                discovered: '1996',
+                significance: 'Close approach to Earth (0.1 AU) in 1996'
+            }
+        },
+        {
+            name: 'Comet ISON',
+            realRadius: 1,
+            perihelion: 2800000,
+            aphelion: 88000000000,
+            period: 400000,
+            eccentricity: 0.999,
+            speed: 0.00001,
+            color: '#F0FFFF',
+            angle: Math.PI * 1.5,
+            type: 'comet',
+            info: {
+                type: 'Sungrazing Comet',
+                period: '400,000 years',
+                lastPerihelion: '2013 (disintegrated)',
+                nucleus: '1.2 km diameter',
+                discovered: '2012',
+                significance: 'Disintegrated during close solar approach'
+            }
+        },
+        {
+            name: 'Comet Borrelly',
+            realRadius: 4,
+            perihelion: 136000000,
+            aphelion: 8800000000,
+            period: 6.8,
+            eccentricity: 0.624,
+            speed: 0.002,
+            color: '#B0E0E6',
+            angle: Math.PI * 0.2,
+            type: 'comet',
+            info: {
+                type: 'Short-period Comet',
+                period: '6.8 years',
+                lastPerihelion: '2022',
+                nextPerihelion: '2028',
+                nucleus: '8 × 4 × 4 km',
+                discovered: '1904',
+                significance: 'Visited by Deep Space 1 spacecraft in 2001'
+            }
+        },
+        {
+            name: 'Comet Encke',
+            realRadius: 2.4,
+            perihelion: 50700000,
+            aphelion: 620000000,
+            period: 3.3,
+            eccentricity: 0.847,
+            speed: 0.003,
+            color: '#87CEFA',
+            angle: Math.PI * 0.6,
+            type: 'comet',
+            info: {
+                type: 'Short-period Comet',
+                period: '3.3 years',
+                lastPerihelion: '2023',
+                nextPerihelion: '2026',
+                nucleus: '4.8 km diameter',
+                discovered: '1786',
+                significance: 'Shortest orbital period of any known comet'
+            }
+        },
+        {
+            name: 'Comet Churyumov-Gerasimenko',
+            realRadius: 1.7,
+            perihelion: 186000000,
+            aphelion: 850000000,
+            period: 6.45,
+            eccentricity: 0.641,
+            speed: 0.002,
+            color: '#E0FFFF',
+            angle: Math.PI * 1.8,
+            type: 'comet',
+            info: {
+                type: 'Short-period Comet',
+                period: '6.45 years',
+                lastPerihelion: '2021',
+                nextPerihelion: '2028',
+                nucleus: '4.1 × 3.3 × 1.8 km',
+                discovered: '1969',
+                significance: 'Visited by Rosetta spacecraft (2014-2016)'
+            }
+        },
+        {
+            name: 'Comet Wild 2',
+            realRadius: 2.5,
+            perihelion: 160000000,
+            aphelion: 5500000000,
+            period: 6.4,
+            eccentricity: 0.540,
+            speed: 0.002,
+            color: '#B0C4DE',
+            angle: Math.PI * 0.1,
+            type: 'comet',
+            info: {
+                type: 'Short-period Comet',
+                period: '6.4 years',
+                lastPerihelion: '2022',
+                nextPerihelion: '2028',
+                nucleus: '5.5 km diameter',
+                discovered: '1978',
+                significance: 'Visited by Stardust spacecraft (collected samples)'
+            }
+        },
+        {
+            name: 'Comet Tempel 1',
+            realRadius: 3,
+            perihelion: 150000000,
+            aphelion: 4400000000,
+            period: 5.5,
+            eccentricity: 0.519,
+            speed: 0.0025,
+            color: '#D1E0E0',
+            angle: Math.PI * 0.3,
+            type: 'comet',
+            info: {
+                type: 'Short-period Comet',
+                period: '5.5 years',
+                lastPerihelion: '2021',
+                nextPerihelion: '2026',
+                nucleus: '7.6 × 4.9 km',
+                discovered: '1867',
+                significance: 'Target of Deep Impact mission (2005)'
+            }
+        },
+        {
+            name: 'Comet Lovejoy',
+            realRadius: 2,
+            perihelion: 190000000,
+            aphelion: 100000000000,
+            period: 8000,
+            eccentricity: 0.998,
+            speed: 0.0001,
+            color: '#AFEEEE',
+            angle: Math.PI * 0.5,
+            type: 'comet',
+            info: {
+                type: 'Long-period Comet',
+                period: '8,000 years',
+                lastPerihelion: '2015',
+                nextPerihelion: '~10,015 AD',
+                nucleus: '5 km diameter',
+                discovered: '2014',
+                significance: 'Survived close approach to the Sun'
+            }
+        },
+        {
+            name: 'Comet McNaught',
+            realRadius: 15,
+            perihelion: 25000000,
+            aphelion: 67000000000,
+            period: 92000,
+            eccentricity: 0.999,
+            speed: 0.00005,
+            color: '#F0F8FF',
+            angle: Math.PI * 0.7,
+            type: 'comet',
+            info: {
+                type: 'Long-period Comet',
+                period: '92,000 years',
+                lastPerihelion: '2007',
+                nextPerihelion: '~93,000 AD',
+                nucleus: '25 km diameter',
+                discovered: '2006',
+                significance: 'Brightest comet in over 40 years'
+            }
+        },
+        {
+            name: 'Comet Swift-Tuttle',
+            realRadius: 13,
+            perihelion: 95000000,
+            aphelion: 51000000000,
+            period: 133,
+            eccentricity: 0.960,
+            speed: 0.001,
+            color: '#E6E6FA',
+            angle: Math.PI * 0.9,
+            type: 'comet',
+            info: {
+                type: 'Periodic Comet',
+                period: '133 years',
+                lastPerihelion: '1992',
+                nextPerihelion: '2125',
+                nucleus: '26 km diameter',
+                discovered: '1862',
+                significance: 'Parent body of Perseid meteor shower'
+            }
+        },
+        {
+            name: 'Comet Ikeya-Seki',
+            realRadius: 3,
+            perihelion: 1800000,
+            aphelion: 183000000000,
+            period: 880,
+            eccentricity: 0.999,
+            speed: 0.00008,
+            color: '#FFFACD',
+            angle: Math.PI * 1.1,
+            type: 'comet',
+            info: {
+                type: 'Sungrazing Comet',
+                period: '880 years',
+                lastPerihelion: '1965',
+                nextPerihelion: '2845',
+                nucleus: '5 km diameter',
+                discovered: '1965',
+                significance: 'One of the brightest comets of last millennium'
+            }
+        },
+        {
+            name: 'Comet Shoemaker-Levy 9',
+            realRadius: 2,
+            perihelion: 74000000,
+            aphelion: 8000000000,
+            period: 17.8,
+            eccentricity: 0.206,
+            speed: 0.001,
+            color: '#D3D3D3',
+            angle: Math.PI * 1.4,
+            type: 'comet',
+            info: {
+                type: 'Jupiter-family Comet',
+                period: '17.8 years',
+                lastPerihelion: '1992 (fragmented)',
+                nucleus: 'Fragmented (original ~5 km)',
+                discovered: '1993',
+                significance: 'Collided with Jupiter in 1994 (first observed comet collision)'
+            }
+        }
+    ];
+}
+
+initSpacecraft() {
+    this.spacecraft = [
+        // 🌍 Earth Orbit & Space Telescopes
+        {
+            name: 'Hubble Space Telescope',
+            realDistance: 547,
+            speed: 7.5,
+            color: '#6495ED',
+            angle: 0,
+            type: 'spacecraft',
+            status: 'Active - Earth Orbit',
+            launched: '1990',
+            info: {
+                mission: 'Space-based observatory',
+                altitude: '547 km',
+                orbitalPeriod: '95 minutes',
+                discoveries: 'Hubble Deep Field, exoplanet atmospheres, dark energy'
+            }
+        },
+        {
+            name: 'James Webb Space Telescope',
+            realDistance: 1500000,
+            speed: 1,
+            color: '#9370DB',
+            angle: Math.PI,
+            type: 'spacecraft',
+            status: 'Active - L2 Point',
+            launched: '2021',
+            info: {
+                mission: 'Infrared astronomy',
+                location: 'Earth-Sun L2 point',
+                mirrorSize: '6.5m',
+                discoveries: 'Early universe galaxies, exoplanet characterization'
+            }
+        },
+        {
+            name: 'Chandra X-ray Observatory',
+            realDistance: 133000,
+            speed: 10,
+            color: '#8A2BE2',
+            angle: Math.PI * 0.4,
+            type: 'spacecraft',
+            status: 'Active - High Earth Orbit',
+            launched: '1999',
+            info: {
+                mission: 'X-ray astronomy',
+                discoveries: 'Black holes, galaxy clusters, dark matter'
+            }
+        },
+        {
+            name: 'Spitzer Space Telescope',
+            realDistance: 0,
+            speed: 0,
+            color: '#FF69B4',
+            angle: Math.PI * 0.6,
+            type: 'spacecraft',
+            status: 'Mission ended 2020',
+            launched: '2003',
+            info: {
+                mission: 'Infrared astronomy',
+                discoveries: 'Exoplanet atmospheres, star formation regions'
+            }
+        },
+        {
+            name: 'International Space Station',
+            realDistance: 400,
+            speed: 7.66,
+            color: '#FFFFFF',
+            angle: 0,
+            type: 'spacecraft',
+            status: 'Active - Earth Orbit',
+            launched: '1998',
+            info: {
+                mission: 'Space laboratory',
+                altitude: '400 km',
+                crew: 'Continuous since 2000'
+            }
+        },
+        {
+            name: 'Kepler Space Telescope',
+            realDistance: 0,
+            speed: 0,
+            color: '#4169E1',
+            angle: Math.PI * 1.3,
+            type: 'spacecraft',
+            status: 'Mission ended 2018',
+            launched: '2009',
+            info: {
+                mission: 'Exoplanet hunting',
+                discoveries: 'Over 2,600 confirmed exoplanets'
+            }
+        },
+        {
+            name: 'TESS (Transiting Exoplanet Survey Satellite)',
+            realDistance: 375000,
+            speed: 2,
+            color: '#FF1493',
+            angle: Math.PI * 0.9,
+            type: 'spacecraft',
+            status: 'Active - High Earth Orbit',
+            launched: '2018',
+            info: {
+                mission: 'All-sky exoplanet survey',
+                orbit: 'Highly elliptical Earth orbit'
+            }
+        },
+        {
+            name: 'Gaia',
+            realDistance: 1500000,
+            speed: 1,
+            color: '#00CED1',
+            angle: Math.PI * 1.1,
+            type: 'spacecraft',
+            status: 'Active - L2 Point',
+            launched: '2013',
+            info: {
+                mission: 'Stellar positions and distances',
+                discoveries: 'Most detailed 3D map of our galaxy'
+            }
+        },
+        {
+            name: 'Planck',
+            realDistance: 0,
+            speed: 0,
+            color: '#DA70D6',
+            angle: Math.PI * 1.7,
+            type: 'spacecraft',
+            status: 'Mission ended 2013',
+            launched: '2009',
+            info: {
+                mission: 'Cosmic microwave background',
+                discoveries: 'Precise age and composition of universe'
+            }
+        },
+        {
+            name: 'WMAP (Wilkinson Microwave Anisotropy Probe)',
+            realDistance: 0,
+            speed: 0,
+            color: '#B8860B',
+            angle: Math.PI * 1.9,
+            type: 'spacecraft',
+            status: 'Mission ended 2010',
+            launched: '2001',
+            info: {
+                mission: 'Cosmic microwave background mapping',
+                discoveries: 'Universe composition: 4% normal matter'
+            }
+        },
+        {
+            name: 'Fermi Gamma-ray Space Telescope',
+            realDistance: 550,
+            speed: 7.5,
+            color: '#FF4500',
+            angle: Math.PI * 0.1,
+            type: 'spacecraft',
+            status: 'Active - Earth Orbit',
+            launched: '2008',
+            info: {
+                mission: 'Gamma-ray astronomy',
+                discoveries: 'Gamma-ray bursts, pulsars'
+            }
+        },
+        {
+            name: 'Euclid',
+            realDistance: 1500000,
+            speed: 1,
+            color: '#4B0082',
+            angle: Math.PI * 1.4,
+            type: 'spacecraft',
+            status: 'Active - L2 Point',
+            launched: '2023',
+            info: {
+                mission: 'Dark matter and dark energy mapping',
+                goal: 'Map billions of galaxies'
+            }
+        },
+
+        // ☀️ Solar Missions
+        {
+            name: 'Parker Solar Probe',
+            realDistance: 20000000,
+            speed: 0.02,
+            color: '#FF4500',
+            angle: Math.PI * 1.5,
+            type: 'spacecraft',
+            status: 'Active - Solar Corona',
+            launched: '2018',
+            info: {
+                mission: 'Study Sun\'s corona',
+                closestApproach: '6.2 million km',
+                fastestSpeed: '692,000 km/h'
+            }
+        },
+        {
+            name: 'SOHO (Solar and Heliospheric Observatory)',
+            realDistance: 1500000,
+            speed: 1,
+            color: '#FFD700',
+            angle: Math.PI * 0.8,
+            type: 'spacecraft',
+            status: 'Active - L1 Point',
+            launched: '1995',
+            info: {
+                mission: 'Solar wind, CME detection',
+                contribution: 'Real-time space weather monitoring'
+            }
+        },
+        {
+            name: 'Solar Orbiter',
+            realDistance: 50000000,
+            speed: 0.01,
+            color: '#FF8C00',
+            angle: Math.PI * 0.3,
+            type: 'spacecraft',
+            status: 'Active - Solar mission',
+            launched: '2020',
+            info: {
+                mission: 'High-latitude solar studies',
+                orbit: 'Elliptical, close solar passes'
+            }
+        },
+        {
+            name: 'Ulysses',
+            realDistance: 0,
+            speed: 0,
+            color: '#FFA500',
+            angle: Math.PI * 0.5,
+            type: 'spacecraft',
+            status: 'Mission ended 2009',
+            launched: '1990',
+            info: {
+                mission: 'Solar polar regions study',
+                achievement: 'First spacecraft over Sun\'s poles'
+            }
+        },
+        {
+            name: 'STEREO-A',
+            realDistance: 149600000,
+            speed: 0.001,
+            color: '#FF6347',
+            angle: Math.PI * 0.2,
+            type: 'spacecraft',
+            status: 'Active - Solar orbit',
+            launched: '2006',
+            info: {
+                mission: '3D solar observations',
+                twin: 'STEREO-B (contact lost 2014)'
+            }
+        },
+
+        // 🌑 Moon Missions
+        {
+            name: 'Apollo Lunar Module (Historic)',
+            realDistance: 384400,
+            speed: 0.001,
+            color: '#C0C0C0',
+            angle: Math.PI * 0.7,
+            type: 'spacecraft',
+            status: 'Historic - 1969 to 1972',
+            launched: '1969',
+            info: {
+                mission: 'Crewed lunar landing',
+                flights: 'Apollo 11–17'
+            }
+        },
+        {
+            name: 'Lunar Reconnaissance Orbiter (LRO)',
+            realDistance: 384400,
+            speed: 1.6,
+            color: '#DCDCDC',
+            angle: Math.PI * 0.2,
+            type: 'spacecraft',
+            status: 'Active - Lunar Orbit',
+            launched: '2009',
+            info: {
+                mission: 'High-resolution lunar mapping',
+                discoveries: 'Detailed lunar surface features'
+            }
+        },
+        {
+            name: 'Artemis I (Orion Capsule)',
+            realDistance: 384400,
+            speed: 0.001,
+            color: '#F5F5F5',
+            angle: Math.PI * 0.3,
+            type: 'spacecraft',
+            status: 'Mission completed 2022',
+            launched: '2022',
+            info: {
+                mission: 'Uncrewed lunar test flight',
+                duration: '25.5 days'
+            }
+        },
+        {
+            name: 'Chang\'e 3',
+            realDistance: 384400,
+            speed: 0.001,
+            color: '#DC143C',
+            angle: Math.PI * 0.4,
+            type: 'spacecraft',
+            status: 'Mission ended 2016',
+            launched: '2013',
+            info: {
+                mission: 'Chinese lunar lander + Yutu rover',
+                achievement: 'First soft landing since 1976'
+            }
+        },
+        {
+            name: 'Chang\'e 4',
+            realDistance: 384400,
+            speed: 0.001,
+            color: '#B22222',
+            angle: Math.PI * 0.45,
+            type: 'spacecraft',
+            status: 'Active - Lunar Surface',
+            launched: '2018',
+            info: {
+                mission: 'First far side lunar landing',
+                rover: 'Yutu-2'
+            }
+        },
+        {
+            name: 'Chang\'e 5',
+            realDistance: 0,
+            speed: 0,
+            color: '#8B0000',
+            angle: Math.PI * 0.5,
+            type: 'spacecraft',
+            status: 'Mission completed 2020',
+            launched: '2020',
+            info: {
+                mission: 'Lunar sample return',
+                achievement: '1.7 kg of lunar samples returned'
+            }
+        },
+        {
+            name: 'Chandrayaan-1',
+            realDistance: 0,
+            speed: 0,
+            color: '#FF8C00',
+            angle: Math.PI * 0.55,
+            type: 'spacecraft',
+            status: 'Mission ended 2009',
+            launched: '2008',
+            info: {
+                mission: 'Indian lunar orbiter',
+                discovery: 'Water ice at lunar poles'
+            }
+        },
+        {
+            name: 'Chandrayaan-3',
+            realDistance: 384400,
+            speed: 0.001,
+            color: '#FF4500',
+            angle: Math.PI * 0.6,
+            type: 'spacecraft',
+            status: 'Active - Lunar Surface',
+            launched: '2023',
+            info: {
+                mission: 'Indian lunar south pole landing',
+                rover: 'Pragyan'
+            }
+        },
+        {
+            name: 'SMART-1',
+            realDistance: 0,
+            speed: 0,
+            color: '#4682B4',
+            angle: Math.PI * 0.65,
+            type: 'spacecraft',
+            status: 'Mission ended 2006',
+            launched: '2003',
+            info: {
+                mission: 'ESA lunar orbiter',
+                propulsion: 'Ion drive technology demonstration'
+            }
+        },
+        {
+            name: 'LCROSS',
+            realDistance: 0,
+            speed: 0,
+            color: '#708090',
+            angle: Math.PI * 0.7,
+            type: 'spacecraft',
+            status: 'Mission ended 2009',
+            launched: '2009',
+            info: {
+                mission: 'Lunar impact probe',
+                discovery: 'Confirmed water ice in lunar craters'
+            }
+        },
+
+        // 🔴 Mars Missions
+        {
+            name: 'Viking 1',
+            realDistance: 227900000,
+            speed: 0.00001,
+            color: '#A0522D',
+            angle: Math.PI * 0.4,
+            type: 'spacecraft',
+            status: 'Mission ended 1982',
+            launched: '1975',
+            info: {
+                mission: 'First successful Mars lander'
+            }
+        },
+        {
+            name: 'Viking 2',
+            realDistance: 227900000,
+            speed: 0.00001,
+            color: '#CD853F',
+            angle: Math.PI * 0.6,
+            type: 'spacecraft',
+            status: 'Mission ended 1980',
+            launched: '1975',
+            info: {
+                mission: 'Mars orbiter + lander'
+            }
+        },
+        {
+            name: 'Pathfinder & Sojourner',
+            realDistance: 227900000,
+            speed: 0.00001,
+            color: '#B22222',
+            angle: Math.PI * 0.8,
+            type: 'spacecraft',
+            status: 'Mission ended 1997',
+            launched: '1996',
+            info: {
+                mission: 'First Mars rover (Sojourner)'
+            }
+        },
+        {
+            name: 'Spirit Rover',
+            realDistance: 227900000,
+            speed: 0.00001,
+            color: '#FF7F50',
+            angle: Math.PI,
+            type: 'spacecraft',
+            status: 'Mission ended 2011',
+            launched: '2003',
+            info: {
+                mission: 'Mars exploration rover',
+                discoveries: 'Evidence of past water'
+            }
+        },
+        {
+            name: 'Opportunity Rover',
+            realDistance: 227900000,
+            speed: 0.00001,
+            color: '#FF6347',
+            angle: Math.PI * 1.2,
+            type: 'spacecraft',
+            status: 'Mission ended 2019',
+            launched: '2003',
+            info: {
+                mission: 'Mars exploration rover',
+                duration: '15 years'
+            }
+        },
+        {
+            name: 'Curiosity Rover',
+            realDistance: 227900000,
+            speed: 0.00001,
+            color: '#DA70D6',
+            angle: Math.PI,
+            type: 'spacecraft',
+            status: 'Active - Mars Surface',
+            launched: '2011',
+            info: {
+                mission: 'Mars habitability studies',
+                discoveries: 'Evidence of ancient lakes'
+            }
+        },
+        {
+            name: 'Perseverance Rover',
+            realDistance: 227900000,
+            speed: 0.00001,
+            color: '#FF8C00',
+            angle: Math.PI,
+            type: 'spacecraft',
+            status: 'Active - Mars Surface',
+            launched: '2020',
+            info: {
+                mission: 'Astrobiology & sample caching',
+                companion: 'Ingenuity helicopter'
+            }
+        },
+        {
+            name: 'Mars Reconnaissance Orbiter (MRO)',
+            realDistance: 227900000,
+            speed: 0.0001,
+            color: '#4682B4',
+            angle: Math.PI * 0.2,
+            type: 'spacecraft',
+            status: 'Active - Mars Orbit',
+            launched: '2005',
+            info: {
+                mission: 'High-resolution mapping',
+                instrument: 'HiRISE camera'
+            }
+        },
+        {
+            name: 'MAVEN',
+            realDistance: 227900000,
+            speed: 0.0001,
+            color: '#6A5ACD',
+            angle: Math.PI * 0.4,
+            type: 'spacecraft',
+            status: 'Active - Mars Orbit',
+            launched: '2013',
+            info: {
+                mission: 'Study Mars atmosphere & loss'
+            }
+        },
+        {
+            name: 'Mars Global Surveyor',
+            realDistance: 227900000,
+            speed: 0.0001,
+            color: '#8B4513',
+            angle: Math.PI * 0.3,
+            type: 'spacecraft',
+            status: 'Mission ended 2006',
+            launched: '1996',
+            info: {
+                mission: 'Global mapping of Mars',
+                discoveries: 'Evidence of ancient water flow'
+            }
+        },
+        {
+            name: 'Mars Express',
+            realDistance: 227900000,
+            speed: 0.0001,
+            color: '#4169E1',
+            angle: Math.PI * 0.5,
+            type: 'spacecraft',
+            status: 'Active - Mars Orbit',
+            launched: '2003',
+            info: {
+                mission: 'ESA Mars orbiter',
+                instruments: 'MARSIS radar, spectrometers'
+            }
+        },
+        {
+            name: 'ExoMars Trace Gas Orbiter',
+            realDistance: 227900000,
+            speed: 0.0001,
+            color: '#32CD32',
+            angle: Math.PI * 0.6,
+            type: 'spacecraft',
+            status: 'Active - Mars Orbit',
+            launched: '2016',
+            info: {
+                mission: 'Search for methane and trace gases',
+                collaboration: 'ESA-Roscosmos'
+            }
+        },
+        {
+            name: 'Tianwen-1',
+            realDistance: 227900000,
+            speed: 0.00001,
+            color: '#DC143C',
+            angle: Math.PI * 0.7,
+            type: 'spacecraft',
+            status: 'Active - Mars Orbit & Surface',
+            launched: '2020',
+            info: {
+                mission: 'Chinese Mars orbiter + Zhurong rover',
+                achievement: 'China\'s first successful Mars mission'
+            }
+        },
+        {
+            name: 'Mars Odyssey',
+            realDistance: 227900000,
+            speed: 0.0001,
+            color: '#FF69B4',
+            angle: Math.PI * 0.8,
+            type: 'spacecraft',
+            status: 'Active - Mars Orbit',
+            launched: '2001',
+            info: {
+                mission: 'Orbital survey and communications relay',
+                record: 'Longest-serving Mars spacecraft'
+            }
+        },
+        {
+            name: 'InSight Lander',
+            realDistance: 227900000,
+            speed: 0.00001,
+            color: '#8A2BE2',
+            angle: Math.PI * 1.1,
+            type: 'spacecraft',
+            status: 'Mission ended 2022',
+            launched: '2018',
+            info: {
+                mission: 'Mars interior structure study',
+                instruments: 'Seismometer, heat probe'
+            }
+        },
+        {
+            name: 'Phoenix Lander',
+            realDistance: 227900000,
+            speed: 0.00001,
+            color: '#FF7F50',
+            angle: Math.PI * 1.3,
+            type: 'spacecraft',
+            status: 'Mission ended 2008',
+            launched: '2007',
+            info: {
+                mission: 'Mars arctic soil analysis',
+                discovery: 'Water ice in Martian soil'
+            }
+        },
+
+        // 🌌 Outer Planets & Interstellar
+        {
+            name: 'Voyager 1',
+            realDistance: 23700000000,
+            speed: 0.0005,
+            color: '#FFD700',
+            angle: Math.PI * 0.2,
+            type: 'spacecraft',
+            status: 'Active - Interstellar Space',
+            launched: '1977',
+            info: {
+                mission: 'Farthest human-made object',
+                achievement: 'First spacecraft in interstellar space'
+            }
+        },
+        {
+            name: 'Voyager 2',
+            realDistance: 19700000000,
+            speed: 0.0005,
+            color: '#FFD700',
+            angle: Math.PI * 1.8,
+            type: 'spacecraft',
+            status: 'Active - Interstellar Space',
+            launched: '1977',
+            info: {
+                mission: 'Only probe to visit Uranus & Neptune',
+                achievement: 'Grand Tour of outer planets'
+            }
+        },
+        {
+            name: 'Pioneer 10',
+            realDistance: 12200000000,
+            speed: 0.0005,
+            color: '#FFDEAD',
+            angle: Math.PI * 1.2,
+            type: 'spacecraft',
+            status: 'Mission ended 2003',
+            launched: '1972',
+            info: {
+                mission: 'First probe to cross asteroid belt',
+                plaque: 'Carries message for extraterrestrials'
+            }
+        },
+        {
+            name: 'Pioneer 11',
+            realDistance: 10500000000,
+            speed: 0.0005,
+            color: '#DEB887',
+            angle: Math.PI * 1.4,
+            type: 'spacecraft',
+            status: 'Mission ended 1995',
+            launched: '1973',
+            info: {
+                mission: 'Explored Jupiter & Saturn'
+            }
+        },
+        {
+            name: 'Cassini-Huygens',
+            realDistance: 0,
+            speed: 0,
+            color: '#00BFFF',
+            angle: Math.PI * 1.2,
+            type: 'spacecraft',
+            status: 'Mission ended 2017',
+            launched: '1997',
+            info: {
+                mission: 'Saturn orbiter + Titan lander',
+                achievement: '13 years studying Saturn system'
+            }
+        },
+        {
+            name: 'Galileo',
+            realDistance: 0,
+            speed: 0,
+            color: '#20B2AA',
+            angle: Math.PI * 0.5,
+            type: 'spacecraft',
+            status: 'Mission ended 2003',
+            launched: '1989',
+            info: {
+                mission: 'Jupiter exploration',
+                discoveries: 'Europa subsurface ocean'
+            }
+        },
+        {
+            name: 'Juno',
+            realDistance: 778500000,
+            speed: 0.0002,
+            color: '#1E90FF',
+            angle: Math.PI * 0.7,
+            type: 'spacecraft',
+            status: 'Active - Jupiter Orbit',
+            launched: '2011',
+            info: {
+                mission: 'Study Jupiter interior & magnetosphere'
+            }
+        },
+        {
+            name: 'New Horizons',
+            realDistance: 7500000000,
+            speed: 0.0008,
+            color: '#FF6347',
+            angle: Math.PI * 0.9,
+            type: 'spacecraft',
+            status: 'Active - Kuiper Belt',
+            launched: '2006',
+            info: {
+                mission: 'First Pluto flyby, KBO exploration',
+                discoveries: 'Detailed images of Pluto system'
+            }
+        },
+
+        // 🪐 More Outer Planet Missions
+        {
+            name: 'JUICE (Jupiter Icy Moons Explorer)',
+            realDistance: 200000000,
+            speed: 0.00005,
+            color: '#00FA9A',
+            angle: Math.PI * 1.3,
+            type: 'spacecraft',
+            status: 'En route to Jupiter',
+            launched: '2023',
+            info: {
+                mission: 'Study Jupiter\'s icy moons',
+                targets: 'Ganymede, Callisto, Europa'
+            }
+        },
+        {
+            name: 'Europa Clipper',
+            realDistance: 150000000,
+            speed: 0.00005,
+            color: '#87CEEB',
+            angle: Math.PI * 1.4,
+            type: 'spacecraft',
+            status: 'En route to Jupiter',
+            launched: '2024',
+            info: {
+                mission: 'Study Europa\'s habitability',
+                goal: 'Analyze subsurface ocean'
+            }
+        },
+        {
+            name: 'Dragonfly',
+            realDistance: 100000000,
+            speed: 0.00005,
+            color: '#FF1493',
+            angle: Math.PI * 1.5,
+            type: 'spacecraft',
+            status: 'Planned - Launch 2028',
+            launched: 'Future',
+            info: {
+                mission: 'Titan rotorcraft lander',
+                unique: 'Flying drone on Titan'
+            }
+        },
+
+        // 🌟 Asteroid & Comet Missions
+        {
+            name: 'DART',
+            realDistance: 0,
+            speed: 0,
+            color: '#32CD32',
+            angle: Math.PI * 0.5,
+            type: 'spacecraft',
+            status: 'Mission completed 2022',
+            launched: '2021',
+            info: {
+                mission: 'Planetary defense asteroid impact test',
+                target: 'Dimorphos asteroid'
+            }
+        },
+        {
+            name: 'OSIRIS-REx',
+            realDistance: 149600000,
+            speed: 0.0001,
+            color: '#FFD700',
+            angle: Math.PI * 0.3,
+            type: 'spacecraft',
+            status: 'Sample returned 2023',
+            launched: '2016',
+            info: {
+                mission: 'Asteroid Bennu sample return',
+                achievement: '60g of asteroid material returned'
+            }
+        },
+        {
+            name: 'Hayabusa',
+            realDistance: 0,
+            speed: 0,
+            color: '#FF4500',
+            angle: Math.PI * 1.6,
+            type: 'spacecraft',
+            status: 'Mission completed 2010',
+            launched: '2003',
+            info: {
+                mission: 'First asteroid sample return',
+                target: 'Asteroid Itokawa'
+            }
+        },
+        {
+            name: 'Hayabusa2',
+            realDistance: 0,
+            speed: 0,
+            color: '#FF6347',
+            angle: Math.PI * 1.7,
+            type: 'spacecraft',
+            status: 'Mission completed 2020',
+            launched: '2014',
+            info: {
+                mission: 'Asteroid Ryugu sample return',
+                achievement: '5.4g samples returned'
+            }
+        },
+        {
+            name: 'Rosetta',
+            realDistance: 0,
+            speed: 0,
+            color: '#9370DB',
+            angle: Math.PI * 1.8,
+            type: 'spacecraft',
+            status: 'Mission ended 2016',
+            launched: '2004',
+            info: {
+                mission: 'Comet 67P orbiter + Philae lander',
+                first: 'First comet orbit and soft landing'
+            }
+        },
+        {
+            name: 'Deep Impact',
+            realDistance: 0,
+            speed: 0,
+            color: '#B22222',
+            angle: Math.PI * 1.9,
+            type: 'spacecraft',
+            status: 'Mission ended 2013',
+            launched: '2005',
+            info: {
+                mission: 'Comet Tempel 1 impactor study',
+                achievement: 'First deliberate comet impact'
+            }
+        },
+        {
+            name: 'Stardust',
+            realDistance: 0,
+            speed: 0,
+            color: '#FFB6C1',
+            angle: Math.PI * 0.1,
+            type: 'spacecraft',
+            status: 'Mission completed 2011',
+            launched: '1999',
+            info: {
+                mission: 'Comet Wild 2 sample return',
+                first: 'First comet dust samples returned'
+            }
+        },
+        {
+            name: 'Dawn',
+            realDistance: 0,
+            speed: 0,
+            color: '#778899',
+            angle: Math.PI * 0.15,
+            type: 'spacecraft',
+            status: 'Mission ended 2018',
+            launched: '2007',
+            info: {
+                mission: 'Vesta and Ceres orbiter',
+                propulsion: 'Ion drive to two asteroids'
+            }
+        },
+        {
+            name: 'NEAR Shoemaker',
+            realDistance: 0,
+            speed: 0,
+            color: '#CD5C5C',
+            angle: Math.PI * 0.2,
+            type: 'spacecraft',
+            status: 'Mission ended 2001',
+            launched: '1996',
+            info: {
+                mission: 'Asteroid Eros orbiter and lander',
+                first: 'First asteroid orbiter'
+            }
+        },
+
+        // 🌍 Earth Science & Weather Satellites
+        {
+            name: 'Landsat 9',
+            realDistance: 705,
+            speed: 6.8,
+            color: '#228B22',
+            angle: Math.PI * 0.25,
+            type: 'spacecraft',
+            status: 'Active - Earth Orbit',
+            launched: '2021',
+            info: {
+                mission: 'Earth observation and land monitoring',
+                series: 'Latest in 50+ year Landsat program'
+            }
+        },
+        {
+            name: 'Sentinel-1A',
+            realDistance: 693,
+            speed: 6.9,
+            color: '#4169E1',
+            angle: Math.PI * 0.3,
+            type: 'spacecraft',
+            status: 'Active - Earth Orbit',
+            launched: '2014',
+            info: {
+                mission: 'Radar Earth observation',
+                program: 'Copernicus/ESA'
+            }
+        },
+        {
+            name: 'GOES-16',
+            realDistance: 35786,
+            speed: 3.07,
+            color: '#FF4500',
+            angle: Math.PI * 0.35,
+            type: 'spacecraft',
+            status: 'Active - Geostationary Orbit',
+            launched: '2016',
+            info: {
+                mission: 'Weather monitoring',
+                coverage: 'Americas weather observation'
+            }
+        },
+        {
+            name: 'Terra',
+            realDistance: 705,
+            speed: 6.8,
+            color: '#8FBC8F',
+            angle: Math.PI * 0.4,
+            type: 'spacecraft',
+            status: 'Active - Earth Orbit',
+            launched: '1999',
+            info: {
+                mission: 'Earth climate and environment',
+                instruments: 'MODIS, ASTER, MISR'
+            }
+        },
+        {
+            name: 'Aqua',
+            realDistance: 705,
+            speed: 6.8,
+            color: '#00BFFF',
+            angle: Math.PI * 0.45,
+            type: 'spacecraft',
+            status: 'Active - Earth Orbit',
+            launched: '2002',
+            info: {
+                mission: 'Earth\'s water cycle monitoring',
+                focus: 'Oceans, water vapor, clouds'
+            }
+        },
+
+        // 🚀 Historic Human Spaceflight
+        {
+            name: 'Vostok 1 (Gagarin)',
+            realDistance: 0,
+            speed: 0,
+            color: '#FF0000',
+            angle: Math.PI * 0.5,
+            type: 'spacecraft',
+            status: 'Historic - First human in space',
+            launched: '1961',
+            info: {
+                mission: 'First human spaceflight',
+                pilot: 'Yuri Gagarin',
+                duration: '108 minutes'
+            }
+        },
+        {
+            name: 'Mercury-Redstone 3 (Freedom 7)',
+            realDistance: 0,
+            speed: 0,
+            color: '#0000FF',
+            angle: Math.PI * 0.55,
+            type: 'spacecraft',
+            status: 'Historic - First American in space',
+            launched: '1961',
+            info: {
+                mission: 'First US human spaceflight',
+                pilot: 'Alan Shepard',
+                type: 'Suborbital flight'
+            }
+        },
+        {
+            name: 'Gemini 4',
+            realDistance: 0,
+            speed: 0,
+            color: '#4169E1',
+            angle: Math.PI * 0.6,
+            type: 'spacecraft',
+            status: 'Historic - First US spacewalk',
+            launched: '1965',
+            info: {
+                mission: 'First American EVA',
+                astronaut: 'Ed White spacewalk'
+            }
+        },
+        {
+            name: 'Soyuz 11',
+            realDistance: 0,
+            speed: 0,
+            color: '#8B0000',
+            angle: Math.PI * 0.65,
+            type: 'spacecraft',
+            status: 'Historic tragedy - 1971',
+            launched: '1971',
+            info: {
+                mission: 'First space station crew',
+                tragedy: 'Crew lost during reentry'
+            }
+        },
+        {
+            name: 'Space Shuttle Columbia',
+            realDistance: 0,
+            speed: 0,
+            color: '#FFFFFF',
+            angle: Math.PI * 0.7,
+            type: 'spacecraft',
+            status: 'Historic - First shuttle flight',
+            launched: '1981',
+            info: {
+                mission: 'First reusable spacecraft',
+                flights: '28 missions 1981-2003'
+            }
+        },
+
+        // 🛰️ Communication & Navigation Satellites
+        {
+            name: 'GPS IIF-12',
+            realDistance: 20200,
+            speed: 3.87,
+            color: '#32CD32',
+            angle: Math.PI * 0.75,
+            type: 'spacecraft',
+            status: 'Active - GPS Constellation',
+            launched: '2016',
+            info: {
+                mission: 'Global positioning',
+                constellation: 'Part of 24+ satellite GPS network'
+            }
+        },
+        {
+            name: 'Galileo FOC-1',
+            realDistance: 23222,
+            speed: 3.6,
+            color: '#4169E1',
+            angle: Math.PI * 0.8,
+            type: 'spacecraft',
+            status: 'Active - Galileo Navigation',
+            launched: '2014',
+            info: {
+                mission: 'European navigation system',
+                accuracy: 'Higher precision than GPS'
+            }
+        },
+        {
+            name: 'BeiDou-3 M1',
+            realDistance: 21528,
+            speed: 3.8,
+            color: '#FF0000',
+            angle: Math.PI * 0.85,
+            type: 'spacecraft',
+            status: 'Active - BeiDou Constellation',
+            launched: '2018',
+            info: {
+                mission: 'Chinese navigation system',
+                coverage: 'Global navigation services'
+            }
+        },
+
+        // 🔬 Space Physics & Astronomy Missions
+        {
+            name: 'Van Allen Probes',
+            realDistance: 30000,
+            speed: 5,
+            color: '#FF69B4',
+            angle: Math.PI * 0.9,
+            type: 'spacecraft',
+            status: 'Mission ended 2019',
+            launched: '2012',
+            info: {
+                mission: 'Study Earth\'s radiation belts',
+                discovery: 'Third radiation belt around Earth'
+            }
+        },
+        {
+            name: 'Cluster II',
+            realDistance: 119000,
+            speed: 2,
+            color: '#8A2BE2',
+            angle: Math.PI * 0.95,
+            type: 'spacecraft',
+            status: 'Active - Earth Magnetosphere',
+            launched: '2000',
+            info: {
+                mission: '3D study of Earth\'s magnetosphere',
+                formation: '4 identical spacecraft'
+            }
+        },
+        {
+            name: 'THEMIS',
+            realDistance: 80000,
+            speed: 3,
+            color: '#FF1493',
+            angle: Math.PI * 1.0,
+            type: 'spacecraft',
+            status: 'Active - Earth Magnetosphere',
+            launched: '2007',
+            info: {
+                mission: 'Aurora and magnetic substorm study',
+                constellation: '5 spacecraft mission'
+            }
+        },
+        {
+            name: 'ACE (Advanced Composition Explorer)',
+            realDistance: 1500000,
+            speed: 1,
+            color: '#FFD700',
+            angle: Math.PI * 1.05,
+            type: 'spacecraft',
+            status: 'Active - L1 Point',
+            launched: '1997',
+            info: {
+                mission: 'Solar wind monitoring',
+                warning: 'Space weather early warning'
+            }
+        },
+        {
+            name: 'WIND',
+            realDistance: 1500000,
+            speed: 1,
+            color: '#87CEEB',
+            angle: Math.PI * 1.1,
+            type: 'spacecraft',
+            status: 'Active - L1 Point',
+            launched: '1994',
+            info: {
+                mission: 'Solar wind properties',
+                longevity: '30+ years of operation'
+            }
+        },
+
+        // 🌊 Ocean & Climate Monitoring
+        {
+            name: 'Jason-3',
+            realDistance: 1336,
+            speed: 6.4,
+            color: '#4682B4',
+            angle: Math.PI * 1.15,
+            type: 'spacecraft',
+            status: 'Active - Earth Orbit',
+            launched: '2016',
+            info: {
+                mission: 'Ocean altimetry',
+                purpose: 'Sea level rise monitoring'
+            }
+        },
+        {
+            name: 'GRACE-FO',
+            realDistance: 490,
+            speed: 7.4,
+            color: '#20B2AA',
+            angle: Math.PI * 1.2,
+            type: 'spacecraft',
+            status: 'Active - Earth Orbit',
+            launched: '2018',
+            info: {
+                mission: 'Earth gravity field mapping',
+                method: 'Twin satellite gravitometry'
+            }
+        },
+        {
+            name: 'OCO-2',
+            realDistance: 705,
+            speed: 6.8,
+            color: '#228B22',
+            angle: Math.PI * 1.25,
+            type: 'spacecraft',
+            status: 'Active - Earth Orbit',
+            launched: '2014',
+            info: {
+                mission: 'Atmospheric CO2 monitoring',
+                precision: 'Carbon dioxide global mapping'
+            }
+        },
+
+        // ☄️ Deep Space & Interplanetary
+        {
+            name: 'Helios 1',
+            realDistance: 0,
+            speed: 0,
+            color: '#FF4500',
+            angle: Math.PI * 1.3,
+            type: 'spacecraft',
+            status: 'Mission ended 1985',
+            launched: '1974',
+            info: {
+                mission: 'Solar approach record holder',
+                achievement: 'Closest solar approach until Parker'
+            }
+        },
+        {
+            name: 'Helios 2',
+            realDistance: 0,
+            speed: 0,
+            color: '#FF6347',
+            angle: Math.PI * 1.35,
+            type: 'spacecraft',
+            status: 'Mission ended 1980',
+            launched: '1976',
+            info: {
+                mission: 'Solar wind and plasma study',
+                speed: 'Fastest spacecraft until Parker'
+            }
+        },
+        {
+            name: 'MESSENGER',
+            realDistance: 0,
+            speed: 0,
+            color: '#FFD700',
+            angle: Math.PI * 1.4,
+            type: 'spacecraft',
+            status: 'Mission ended 2015',
+            launched: '2004',
+            info: {
+                mission: 'Mercury orbiter',
+                discoveries: 'Water ice at Mercury poles'
+            }
+        },
+        {
+            name: 'BepiColombo',
+            realDistance: 80000000,
+            speed: 0.00002,
+            color: '#FFA500',
+            angle: Math.PI * 1.45,
+            type: 'spacecraft',
+            status: 'En route to Mercury',
+            launched: '2018',
+            info: {
+                mission: 'ESA-JAXA Mercury mission',
+                arrival: 'Mercury orbit 2025'
+            }
+        },
+        {
+            name: 'Magellan',
+            realDistance: 0,
+            speed: 0,
+            color: '#8B4513',
+            angle: Math.PI * 1.5,
+            type: 'spacecraft',
+            status: 'Mission ended 1994',
+            launched: '1989',
+            info: {
+                mission: 'Venus radar mapping',
+                achievement: '98% of Venus surface mapped'
+            }
+        },
+        {
+            name: 'Venus Express',
+            realDistance: 0,
+            speed: 0,
+            color: '#FF69B4',
+            angle: Math.PI * 1.55,
+            type: 'spacecraft',
+            status: 'Mission ended 2014',
+            launched: '2005',
+            info: {
+                mission: 'Venus atmosphere study',
+                duration: '8 years in Venus orbit'
+            }
+        },
+        {
+            name: 'Akatsuki',
+            realDistance: 108200000,
+            speed: 0.00003,
+            color: '#FF1493',
+            angle: Math.PI * 1.6,
+            type: 'spacecraft',
+            status: 'Active - Venus Orbit',
+            launched: '2010',
+            info: {
+                mission: 'Japanese Venus climate orbiter',
+                resilience: 'Recovered from failed insertion'
+            }
+        },
+
+        // 🛸 Future & Planned Missions
+        {
+            name: 'Artemis II',
+            realDistance: 0,
+            speed: 0,
+            color: '#C0C0C0',
+            angle: Math.PI * 1.65,
+            type: 'spacecraft',
+            status: 'Planned - Crewed lunar flyby',
+            launched: 'Future 2025',
+            info: {
+                mission: 'First crewed lunar mission since Apollo',
+                crew: '4 astronauts lunar flyby'
+            }
+        },
+        {
+            name: 'Roman Space Telescope',
+            realDistance: 1500000,
+            speed: 1,
+            color: '#9370DB',
+            angle: Math.PI * 1.7,
+            type: 'spacecraft',
+            status: 'Planned - Launch 2027',
+            launched: 'Future',
+            info: {
+                mission: 'Dark energy and exoplanet survey',
+                capability: '100x Hubble\'s field of view'
+            }
+        },
+        {
+            name: 'Psyche',
+            realDistance: 200000000,
+            speed: 0.00005,
+            color: '#708090',
+            angle: Math.PI * 1.75,
+            type: 'spacecraft',
+            status: 'En route to asteroid',
+            launched: '2023',
+            info: {
+                mission: 'Metal asteroid exploration',
+                target: '16 Psyche asteroid'
+            }
+        },
+        {
+            name: 'Lucy',
+            realDistance: 300000000,
+            speed: 0.00003,
+            color: '#DAA520',
+            angle: Math.PI * 1.8,
+            type: 'spacecraft',
+            status: 'En route to Trojan asteroids',
+            launched: '2021',
+            info: {
+                mission: 'Jupiter Trojan asteroid tour',
+                targets: '8 asteroids over 12 years'
+            }
+        },
+        {
+            name: 'VERITAS',
+            realDistance: 0,
+            speed: 0,
+            color: '#FF4500',
+            angle: Math.PI * 1.85,
+            type: 'spacecraft',
+            status: 'Planned - Venus mission',
+            launched: 'Future',
+            info: {
+                mission: 'Venus surface and interior mapping',
+                radar: 'High-resolution Venus radar'
+            }
+        },
+
+        // 🌟 Additional Space Telescopes & Observatories
+        {
+            name: 'IXPE',
+            realDistance: 600,
+            speed: 7.6,
+            color: '#8A2BE2',
+            angle: Math.PI * 1.9,
+            type: 'spacecraft',
+            status: 'Active - Earth Orbit',
+            launched: '2021',
+            info: {
+                mission: 'X-ray polarimetry',
+                unique: 'First space X-ray polarimeter'
+            }
+        },
+        {
+            name: 'NuSTAR',
+            realDistance: 600,
+            speed: 7.6,
+            color: '#FF00FF',
+            angle: Math.PI * 1.95,
+            type: 'spacecraft',
+            status: 'Active - Earth Orbit',
+            launched: '2012',
+            info: {
+                mission: 'Hard X-ray astronomy',
+                focus: 'Black holes and supernovae'
+            }
+        }
+    ];
+}
+
+
+
+initDwarfPlanets() {
+    this.dwarfPlanets = [
+        // 🌌 Official IAU Dwarf Planets (5 recognized)
+        {
+            name: 'Pluto',
+            realRadius: 1188.3,
+            realDistance: 5906440000,
+            speed: 0.004,
+            color: '#DEB887',
+            angle: Math.PI * 0.15,
+            eccentricity: 0.249,
+            inclination: 17.16,
+            type: 'dwarf-planet',
+            region: 'Kuiper Belt',
+            path: {
+                a: 5906440000, // semi-major axis
+                e: 0.249, // eccentricity
+                i: 17.16, // inclination
+                omega: 113.76, // longitude of ascending node
+                w: 113.76 // argument of periapsis
+            },
+            moons: [
+                {
+                    name: 'Charon',
+                    realRadius: 606,
+                    realDistance: 19591,
+                    speed: 15.3,
+                    color: '#A9A9A9',
+                    angle: 0
+                },
+                {
+                    name: 'Nix',
+                    realRadius: 23,
+                    realDistance: 48675,
+                    speed: 6.2,
+                    color: '#D3D3D3',
+                    angle: Math.PI * 0.3
+                },
+                {
+                    name: 'Hydra',
+                    realRadius: 30.5,
+                    realDistance: 64780,
+                    speed: 4.8,
+                    color: '#DCDCDC',
+                    angle: Math.PI * 0.6
+                },
+                {
+                    name: 'Styx',
+                    realRadius: 8.5,
+                    realDistance: 42656,
+                    speed: 7.9,
+                    color: '#C0C0C0',
+                    angle: Math.PI * 0.9
+                },
+                {
+                    name: 'Kerberos',
+                    realRadius: 12,
+                    realDistance: 57783,
+                    speed: 5.4,
+                    color: '#B8B8B8',
+                    angle: Math.PI * 1.2
+                }
+            ],
+            info: {
+                type: 'Dwarf Planet (IAU Official)',
+                diameter: '2,376 km',
+                day: '6.4 Earth days',
+                year: '248 Earth years',
+                discoveredBy: 'Clyde Tombaugh (1930)',
+                composition: 'Rock and ice',
+                atmosphere: 'Thin nitrogen atmosphere'
+            }
+        },
+        {
+            name: 'Eris',
+            realRadius: 1163,
+            realDistance: 10120000000,
+            speed: 0.002,
+            color: '#F5F5DC',
+            angle: Math.PI * 0.8,
+            eccentricity: 0.441,
+            inclination: 44.04,
+            type: 'dwarf-planet',
+            region: 'Scattered Disk',
+            path: {
+                a: 10120000000,
+                e: 0.441,
+                i: 44.04,
+                omega: 35.87,
+                w: 151.31
+            },
+            moons: [
+                {
+                    name: 'Dysnomia',
+                    realRadius: 175,
+                    realDistance: 37273,
+                    speed: 6.7,
+                    color: '#C0C0C0',
+                    angle: 0
+                }
+            ],
+            info: {
+                type: 'Dwarf Planet (IAU Official)',
+                diameter: '2,326 km',
+                day: '25.9 hours',
+                year: '558 Earth years',
+                discoveredBy: 'Mike Brown, Chad Trujillo, David Rabinowitz (2005)',
+                note: 'Most massive known dwarf planet'
+            }
+        },
+        {
+            name: 'Makemake',
+            realRadius: 715,
+            realDistance: 6850000000,
+            speed: 0.003,
+            color: '#8B4513',
+            angle: Math.PI * 1.2,
+            eccentricity: 0.159,
+            inclination: 28.96,
+            type: 'dwarf-planet',
+            region: 'Kuiper Belt',
+            path: {
+                a: 6850000000,
+                e: 0.159,
+                i: 28.96,
+                omega: 79.38,
+                w: 298.41
+            },
+            moons: [
+                {
+                    name: 'S/2015 (136472) 1',
+                    realRadius: 87.5,
+                    realDistance: 21000,
+                    speed: 12.4,
+                    color: '#696969',
+                    angle: 0
+                }
+            ],
+            info: {
+                type: 'Dwarf Planet (IAU Official)',
+                diameter: '1,430 km',
+                day: '22.5 hours',
+                year: '310 Earth years',
+                discoveredBy: 'Mike Brown, Chad Trujillo, David Rabinowitz (2005)',
+                composition: 'Rock and ice, methane surface'
+            }
+        },
+        {
+            name: 'Haumea',
+            realRadius: 816, // equivalent sphere radius
+            realDistance: 6484000000,
+            speed: 0.0035,
+            color: '#DAA520',
+            angle: Math.PI * 0.4,
+            eccentricity: 0.189,
+            inclination: 28.19,
+            type: 'dwarf-planet',
+            region: 'Kuiper Belt',
+            path: {
+                a: 6484000000,
+                e: 0.189,
+                i: 28.19,
+                omega: 122.11,
+                w: 238.72
+            },
+            moons: [
+                {
+                    name: 'Hi\'iaka',
+                    realRadius: 195,
+                    realDistance: 49880,
+                    speed: 4.9,
+                    color: '#B0B0B0',
+                    angle: 0
+                },
+                {
+                    name: 'Namaka',
+                    realRadius: 85,
+                    realDistance: 25657,
+                    speed: 8.9,
+                    color: '#A8A8A8',
+                    angle: Math.PI * 0.5
+                }
+            ],
+            info: {
+                type: 'Dwarf Planet (IAU Official)',
+                diameter: '1,632 × 1,075 km (elongated)',
+                day: '3.9 hours (fastest spinning large object)',
+                year: '284 Earth years',
+                discoveredBy: 'Mike Brown, Chad Trujillo, David Rabinowitz (2004)',
+                unique: 'Elongated shape, has ring system'
+            }
+        },
+        {
+            name: 'Ceres',
+            realRadius: 473,
+            realDistance: 413700000,
+            speed: 0.017,
+            color: '#8C7853',
+            angle: Math.PI * 1.7,
+            eccentricity: 0.076,
+            inclination: 10.59,
+            type: 'dwarf-planet',
+            region: 'Asteroid Belt',
+            path: {
+                a: 413700000,
+                e: 0.076,
+                i: 10.59,
+                omega: 80.39,
+                w: 73.6
+            },
+            info: {
+                type: 'Dwarf Planet (IAU Official)',
+                diameter: '946 km',
+                day: '9.1 hours',
+                year: '4.6 Earth years',
+                discoveredBy: 'Giuseppe Piazzi (1801)',
+                unique: 'Only dwarf planet in inner solar system',
+                visited: 'Dawn spacecraft (2015-2018)'
+            }
+        },
+
+        // 🌟 Highly Likely Dwarf Planets (Large TNOs)
+        {
+            name: 'Sedna',
+            realRadius: 497.5,
+            realDistance: 11400000000,
+            speed: 0.0015,
+            color: '#8B0000',
+            angle: Math.PI * 0.6,
+            eccentricity: 0.841,
+            inclination: 11.93,
+            type: 'dwarf-planet',
+            region: 'Detached Object',
+            path: {
+                a: 78400000000, // extremely elliptical
+                e: 0.841,
+                i: 11.93,
+                omega: 144.5,
+                w: 311.1
+            },
+            info: {
+                type: 'Highly Likely Dwarf Planet',
+                diameter: '995 km',
+                year: '11,400 Earth years',
+                discoveredBy: 'Mike Brown, Chad Trujillo, David Rabinowitz (2003)',
+                unique: 'Most distant known solar system object',
+                note: 'Extremely red surface color'
+            }
+        },
+        {
+            name: 'Gonggong',
+            realRadius: 615,
+            realDistance: 10100000000,
+            speed: 0.002,
+            color: '#DC143C',
+            angle: Math.PI * 1.4,
+            eccentricity: 0.499,
+            inclination: 30.74,
+            type: 'dwarf-planet',
+            region: 'Scattered Disk',
+            path: {
+                a: 10100000000,
+                e: 0.499,
+                i: 30.74,
+                omega: 336.75,
+                w: 67.6
+            },
+            moons: [
+                {
+                    name: 'Xiangliu',
+                    realRadius: 50,
+                    realDistance: 25000,
+                    speed: 8.3,
+                    color: '#8B0000',
+                    angle: 0
+                }
+            ],
+            info: {
+                type: 'Highly Likely Dwarf Planet',
+                diameter: '1,230 km',
+                day: '22.4 hours',
+                year: '554 Earth years',
+                discoveredBy: 'Palomar Observatory (2007)',
+                note: 'Very red color, likely has methanol'
+            }
+        },
+        {
+            name: 'Quaoar',
+            realRadius: 555,
+            realDistance: 6530000000,
+            speed: 0.003,
+            color: '#A0522D',
+            angle: Math.PI * 0.3,
+            eccentricity: 0.039,
+            inclination: 8.0,
+            type: 'dwarf-planet',
+            region: 'Kuiper Belt',
+            path: {
+                a: 6530000000,
+                e: 0.039,
+                i: 8.0,
+                omega: 189.0,
+                w: 155.7
+            },
+            moons: [
+                {
+                    name: 'Weywot',
+                    realRadius: 41,
+                    realDistance: 14500,
+                    speed: 12.4,
+                    color: '#8B4513',
+                    angle: 0
+                }
+            ],
+            info: {
+                type: 'Highly Likely Dwarf Planet',
+                diameter: '1,110 km',
+                day: '17.7 hours',
+                year: '288 Earth years',
+                discoveredBy: 'Chad Trujillo, Mike Brown (2002)',
+                unique: 'Has ring system discovered in 2023'
+            }
+        },
+        {
+            name: 'Orcus',
+            realRadius: 458.5,
+            realDistance: 5900000000,
+            speed: 0.004,
+            color: '#2F4F4F',
+            angle: Math.PI * 1.6,
+            eccentricity: 0.226,
+            inclination: 20.57,
+            type: 'dwarf-planet',
+            region: 'Kuiper Belt',
+            path: {
+                a: 5900000000,
+                e: 0.226,
+                i: 20.57,
+                omega: 268.6,
+                w: 73.7
+            },
+            moons: [
+                {
+                    name: 'Vanth',
+                    realRadius: 221,
+                    realDistance: 9030,
+                    speed: 22.5,
+                    color: '#696969',
+                    angle: 0
+                }
+            ],
+            info: {
+                type: 'Highly Likely Dwarf Planet',
+                diameter: '917 km',
+                year: '248 Earth years',
+                discoveredBy: 'Mike Brown, Chad Trujillo, David Rabinowitz (2004)',
+                note: 'Often called "anti-Pluto" - opposite orbital phase'
+            }
+        },
+        {
+            name: 'Salacia',
+            realRadius: 423,
+            realDistance: 6200000000,
+            speed: 0.0037,
+            color: '#4682B4',
+            angle: Math.PI * 0.9,
+            eccentricity: 0.111,
+            inclination: 23.9,
+            type: 'dwarf-planet',
+            region: 'Kuiper Belt',
+            path: {
+                a: 6200000000,
+                e: 0.111,
+                i: 23.9,
+                omega: 280.1,
+                w: 310.9
+            },
+            moons: [
+                {
+                    name: 'Actaea',
+                    realRadius: 145,
+                    realDistance: 5619,
+                    speed: 33.8,
+                    color: '#708090',
+                    angle: 0
+                }
+            ],
+            info: {
+                type: 'Likely Dwarf Planet',
+                diameter: '846 km',
+                year: '273 Earth years',
+                discoveredBy: 'Henry Roe, Mike Brown, Kristina Barkume (2004)',
+                composition: 'Low density, likely icy'
+            }
+        },
+
+        // 🪨 Possible Dwarf Planets (Borderline cases)
+        {
+            name: 'Varda',
+            realRadius: 348,
+            realDistance: 6200000000,
+            speed: 0.0037,
+            color: '#8FBC8F',
+            angle: Math.PI * 1.8,
+            eccentricity: 0.139,
+            inclination: 21.5,
+            type: 'dwarf-planet',
+            region: 'Kuiper Belt',
+            path: {
+                a: 6200000000,
+                e: 0.139,
+                i: 21.5,
+                omega: 195.8,
+                w: 183.9
+            },
+            moons: [
+                {
+                    name: 'Ilmarë',
+                    realRadius: 163,
+                    realDistance: 4865,
+                    speed: 35.2,
+                    color: '#9ACD32',
+                    angle: 0
+                }
+            ],
+            info: {
+                type: 'Possible Dwarf Planet',
+                diameter: '696 km',
+                year: '274 Earth years',
+                discoveredBy: 'Jeffrey Larsen (2003)',
+                note: 'Binary system with large moon'
+            }
+        },
+        {
+            name: 'Ixion',
+            realRadius: 317.5,
+            realDistance: 5900000000,
+            speed: 0.004,
+            color: '#CD853F',
+            angle: Math.PI * 0.7,
+            eccentricity: 0.242,
+            inclination: 19.6,
+            type: 'dwarf-planet',
+            region: 'Kuiper Belt',
+            path: {
+                a: 5900000000,
+                e: 0.242,
+                i: 19.6,
+                omega: 71.0,
+                w: 299.0
+            },
+            info: {
+                type: 'Possible Dwarf Planet',
+                diameter: '650 km',
+                day: '12.4 hours',
+                year: '248 Earth years',
+                discoveredBy: 'Deep Ecliptic Survey (2001)',
+                composition: 'Dark, carbon-rich surface'
+            }
+        },
+        {
+            name: 'Varuna',
+            realRadius: 334,
+            realDistance: 6440000000,
+            speed: 0.0035,
+            color: '#B22222',
+            angle: Math.PI * 1.3,
+            eccentricity: 0.050,
+            inclination: 17.2,
+            type: 'dwarf-planet',
+            region: 'Kuiper Belt',
+            path: {
+                a: 6440000000,
+                e: 0.050,
+                i: 17.2,
+                omega: 97.5,
+                w: 274.8
+            },
+            info: {
+                type: 'Possible Dwarf Planet',
+                diameter: '668 km',
+                day: '6.34 hours',
+                year: '283 Earth years',
+                discoveredBy: 'Robert McMillan (2000)',
+                unique: 'Highly elongated, fast rotator'
+            }
+        },
+        {
+            name: 'Chaos',
+            realRadius: 300,
+            realDistance: 6200000000,
+            speed: 0.0037,
+            color: '#483D8B',
+            angle: Math.PI * 0.5,
+            eccentricity: 0.109,
+            inclination: 12.0,
+            type: 'dwarf-planet',
+            region: 'Kuiper Belt',
+            path: {
+                a: 6200000000,
+                e: 0.109,
+                i: 12.0,
+                omega: 50.3,
+                w: 55.4
+            },
+            info: {
+                type: 'Possible Dwarf Planet',
+                diameter: '600 km',
+                year: '273 Earth years',
+                discoveredBy: 'Deep Ecliptic Survey (1998)',
+                note: 'Member of Haumea family'
+            }
+        },
+        {
+            name: '2002 MS4',
+            realRadius: 410,
+            realDistance: 6100000000,
+            speed: 0.0038,
+            color: '#556B2F',
+            angle: Math.PI * 1.1,
+            eccentricity: 0.141,
+            inclination: 17.7,
+            type: 'dwarf-planet',
+            region: 'Kuiper Belt',
+            path: {
+                a: 6100000000,
+                e: 0.141,
+                i: 17.7,
+                omega: 213.4,
+                w: 95.1
+            },
+            info: {
+                type: 'Possible Dwarf Planet',
+                diameter: '820 km',
+                year: '270 Earth years',
+                discoveredBy: 'Chad Trujillo, Mike Brown (2002)',
+                status: 'One of the largest unnamed objects'
+            }
+        },
+
+        // 🌊 Trans-Neptunian Objects (Smaller candidates)
+        {
+            name: 'Altjira',
+            realRadius: 166.5,
+            realDistance: 6300000000,
+            speed: 0.0036,
+            color: '#8B4513',
+            angle: Math.PI * 1.5,
+            eccentricity: 0.072,
+            inclination: 5.2,
+            type: 'dwarf-planet',
+            region: 'Kuiper Belt',
+            path: {
+                a: 6300000000,
+                e: 0.072,
+                i: 5.2,
+                omega: 292.4,
+                w: 123.8
+            },
+            moons: [
+                {
+                    name: 'Altjira I',
+                    realRadius: 83.5,
+                    realDistance: 6030,
+                    speed: 30.9,
+                    color: '#A0522D',
+                    angle: 0
+                }
+            ],
+            info: {
+                type: 'Small TNO',
+                diameter: '333 km',
+                year: '296 Earth years',
+                discoveredBy: 'Scott Sheppard, Chad Trujillo (2001)',
+                note: 'Equal-sized binary system'
+            }
+        },
+        {
+            name: 'Borasisi',
+            realRadius: 139,
+            realDistance: 6600000000,
+            speed: 0.0034,
+            color: '#CD5C5C',
+            angle: Math.PI * 0.2,
+            eccentricity: 0.017,
+            inclination: 0.6,
+            type: 'dwarf-planet',
+            region: 'Kuiper Belt',
+            path: {
+                a: 6600000000,
+                e: 0.017,
+                i: 0.6,
+                omega: 199.0,
+                w: 288.3
+            },
+            moons: [
+                {
+                    name: 'Pabu',
+                    realRadius: 109,
+                    realDistance: 4660,
+                    speed: 44.9,
+                    color: '#F4A460',
+                    angle: 0
+                }
+            ],
+            info: {
+                type: 'Small TNO Binary',
+                diameter: '278 km',
+                year: '299 Earth years',
+                discoveredBy: 'Deep Ecliptic Survey (1999)',
+                note: 'Named after Kurt Vonnegut characters'
+            }
+        }
+    ];
+}
+
+initConstellations() {
+    this.constellations = [
+        {
+            name: 'Aries',
+            commonName: 'The Ram',
+            stars: [
+                {x: 50, y: -120, brightness: 2.0, name: 'Hamal'},
+                {x: 85, y: -105, brightness: 2.6, name: 'Sheratan'},
+                {x: 95, y: -115, brightness: 3.9, name: 'Mesarthim'},
+                {x: 45, y: -85, brightness: 4.4, name: '41 Arietis'}
+            ],
+            lines: [[0,1], [1,2], [0,3]],
+            info: {
+                type: 'Zodiac Constellation',
+                meaning: 'The Ram',
+                bestView: 'December',
+                notableFeatures: 'First sign of the zodiac'
+            }
+        },
+        {
+            name: 'Taurus',
+            commonName: 'The Bull',
+            stars: [
+                {x: 150, y: -60, brightness: 0.9, name: 'Aldebaran'},
+                {x: 220, y: -20, brightness: 1.7, name: 'Elnath'},
+                {x: 130, y: -35, brightness: 3.5, name: 'Epsilon Tauri'},
+                {x: 95, y: -50, brightness: 3.0, name: 'Delta Tauri'},
+                {x: 175, y: -25, brightness: 3.6, name: 'Zeta Tauri'},
+                {x: 195, y: -45, brightness: 3.4, name: 'Gamma Tauri'},
+                {x: 125, y: -85, brightness: 4.3, name: 'Lambda Tauri'}
+            ],
+            lines: [[0,6], [6,3], [3,2], [2,4], [4,5], [5,1], [1,0]],
+            info: {
+                type: 'Zodiac Constellation',
+                meaning: 'The Bull',
+                bestView: 'January',
+                notableFeatures: 'Contains Pleiades and Hyades star clusters'
+            }
+        },
+        {
+            name: 'Gemini',
+            commonName: 'The Twins',
+            stars: [
+                {x: 280, y: 40, brightness: 1.2, name: 'Castor'},
+                {x: 245, y: 65, brightness: 1.1, name: 'Pollux'},
+                {x: 200, y: 120, brightness: 2.9, name: 'Alhena'},
+                {x: 320, y: 85, brightness: 3.5, name: 'Mebsuta'},
+                {x: 275, y: 140, brightness: 3.1, name: 'Wasat'},
+                {x: 165, y: 135, brightness: 3.8, name: 'Tejat'},
+                {x: 350, y: 55, brightness: 4.1, name: 'Eta Geminorum'}
+            ],
+            lines: [[0,3], [3,6], [6,4], [4,2], [2,5], [5,1], [1,0]],
+            info: {
+                type: 'Zodiac Constellation',
+                meaning: 'The Twins',
+                bestView: 'February',
+                notableFeatures: 'Contains Castor and Pollux, the twin stars'
+            }
+        },
+        {
+            name: 'Cancer',
+            commonName: 'The Crab',
+            stars: [
+                {x: 380, y: 160, brightness: 3.5, name: 'Altarf'},
+                {x: 340, y: 185, brightness: 4.3, name: 'Asellus Australis'},
+                {x: 345, y: 155, brightness: 4.7, name: 'Asellus Borealis'},
+                {x: 310, y: 195, brightness: 4.2, name: 'Acubens'},
+                {x: 395, y: 135, brightness: 5.2, name: 'Iota Cancri'}
+            ],
+            lines: [[0,4], [4,2], [2,1], [1,3]],
+            info: {
+                type: 'Zodiac Constellation',
+                meaning: 'The Crab',
+                bestView: 'March',
+                notableFeatures: 'Contains the Beehive Cluster'
+            }
+        },
+        {
+            name: 'Leo',
+            commonName: 'The Lion',
+            stars: [
+                {x: 320, y: 240, brightness: 1.4, name: 'Regulus'},
+                {x: 245, y: 215, brightness: 2.1, name: 'Algieba'},
+                {x: 210, y: 185, brightness: 2.6, name: 'Adhafera'},
+                {x: 185, y: 155, brightness: 3.4, name: 'Ras Elased'},
+                {x: 125, y: 285, brightness: 2.1, name: 'Denebola'},
+                {x: 275, y: 275, brightness: 3.9, name: 'Zosma'},
+                {x: 295, y: 310, brightness: 2.6, name: 'Chertan'}
+            ],
+            lines: [[3,2], [2,1], [1,0], [0,5], [5,6], [6,4]],
+            info: {
+                type: 'Zodiac Constellation',
+                meaning: 'The Lion',
+                bestView: 'April',
+                notableFeatures: 'Sickle asterism, contains Regulus'
+            }
+        },
+        {
+            name: 'Virgo',
+            commonName: 'The Maiden',
+            stars: [
+                {x: 125, y: 385, brightness: 1.0, name: 'Spica'},
+                {x: 45, y: 315, brightness: 2.7, name: 'Zavijava'},
+                {x: 85, y: 285, brightness: 3.4, name: 'Porrima'},
+                {x: 145, y: 255, brightness: 2.8, name: 'Auva'},
+                {x: 205, y: 225, brightness: 3.9, name: 'Vindemiatrix'},
+                {x: 15, y: 345, brightness: 3.4, name: 'Minelauva'},
+                {x: 165, y: 315, brightness: 4.1, name: 'Heze'}
+            ],
+            lines: [[4,3], [3,2], [2,1], [1,5], [2,6], [6,0]],
+            info: {
+                type: 'Zodiac Constellation',
+                meaning: 'The Maiden',
+                bestView: 'May',
+                notableFeatures: 'Largest zodiac constellation, contains Spica'
+            }
+        },
+        {
+            name: 'Libra',
+            commonName: 'The Scales',
+            stars: [
+                {x: -35, y: 315, brightness: 2.6, name: 'Zubeneschamali'},
+                {x: -65, y: 345, brightness: 2.8, name: 'Zubenelgenubi'},
+                {x: -95, y: 285, brightness: 3.9, name: 'Zubenelakrab'},
+                {x: -125, y: 255, brightness: 4.5, name: 'Brachium'}
+            ],
+            lines: [[0,1], [0,2], [2,3]],
+            info: {
+                type: 'Zodiac Constellation',
+                meaning: 'The Scales',
+                bestView: 'June',
+                notableFeatures: 'Only zodiac constellation representing an object'
+            }
+        },
+        {
+            name: 'Scorpius',
+            commonName: 'The Scorpion',
+            stars: [
+                {x: -125, y: 225, brightness: 1.1, name: 'Antares'},
+                {x: -95, y: 195, brightness: 2.3, name: 'Graffias'},
+                {x: -65, y: 165, brightness: 2.6, name: 'Dschubba'},
+                {x: -35, y: 135, brightness: 2.3, name: 'Pi Scorpii'},
+                {x: -155, y: 255, brightness: 2.3, name: 'Sargas'},
+                {x: -185, y: 285, brightness: 1.6, name: 'Shaula'},
+                {x: -205, y: 315, brightness: 2.7, name: 'Lesath'},
+                {x: -225, y: 345, brightness: 3.9, name: 'Upsilon Scorpii'}
+            ],
+            lines: [[3,2], [2,1], [1,0], [0,4], [4,5], [5,6], [6,7]],
+            info: {
+                type: 'Zodiac Constellation',
+                meaning: 'The Scorpion',
+                bestView: 'July',
+                notableFeatures: 'Contains bright red star Antares'
+            }
+        },
+        {
+            name: 'Sagittarius',
+            commonName: 'The Archer',
+            stars: [
+                {x: -255, y: 255, brightness: 1.8, name: 'Kaus Australis'},
+                {x: -285, y: 225, brightness: 2.7, name: 'Nunki'},
+                {x: -225, y: 195, brightness: 2.8, name: 'Ascella'},
+                {x: -195, y: 225, brightness: 3.1, name: 'Kaus Media'},
+                {x: -165, y: 195, brightness: 2.9, name: 'Kaus Borealis'},
+                {x: -315, y: 195, brightness: 3.2, name: 'Albaldah'},
+                {x: -345, y: 165, brightness: 2.6, name: 'Nash'},
+                {x: -285, y: 165, brightness: 4.0, name: 'Tau Sagittarii'}
+            ],
+            lines: [[6,5], [5,1], [1,7], [7,2], [2,3], [3,0], [0,4], [4,3]],
+            info: {
+                type: 'Zodiac Constellation',
+                meaning: 'The Archer',
+                bestView: 'August',
+                notableFeatures: 'Points toward the center of the Milky Way'
+            }
+        },
+        {
+            name: 'Capricornus',
+            commonName: 'The Sea Goat',
+            stars: [
+                {x: -345, y: 65, brightness: 3.6, name: 'Deneb Algedi'},
+                {x: -375, y: 35, brightness: 3.1, name: 'Dabih'},
+                {x: -315, y: 35, brightness: 3.8, name: 'Nashira'},
+                {x: -285, y: 5, brightness: 4.5, name: 'Alshat'},
+                {x: -255, y: 65, brightness: 4.1, name: 'Prima Giedi'},
+                {x: -255, y: 55, brightness: 4.3, name: 'Secunda Giedi'}
+            ],
+            lines: [[1,2], [2,3], [3,4], [4,5], [5,0], [0,2]],
+            info: {
+                type: 'Zodiac Constellation',
+                meaning: 'The Sea Goat',
+                bestView: 'September',
+                notableFeatures: 'Faintest zodiac constellation'
+            }
+        },
+        {
+            name: 'Aquarius',
+            commonName: 'The Water Bearer',
+            stars: [
+                {x: -225, y: -35, brightness: 2.9, name: 'Sadalsuud'},
+                {x: -195, y: -65, brightness: 3.3, name: 'Sadalmelik'},
+                {x: -165, y: -95, brightness: 3.8, name: 'Skat'},
+                {x: -135, y: -125, brightness: 4.2, name: 'Albali'},
+                {x: -285, y: 5, brightness: 3.7, name: 'Ancha'},
+                {x: -315, y: -35, brightness: 4.5, name: 'Sadachbia'},
+                {x: -255, y: -65, brightness: 4.3, name: 'Sadaltager'}
+            ],
+            lines: [[4,5], [5,6], [6,0], [0,1], [1,2], [2,3]],
+            info: {
+                type: 'Zodiac Constellation',
+                meaning: 'The Water Bearer',
+                bestView: 'October',
+                notableFeatures: 'Contains the Helix Nebula'
+            }
+        },
+        {
+            name: 'Pisces',
+            commonName: 'The Fishes',
+            stars: [
+                {x: -135, y: -185, brightness: 3.6, name: 'Alrescha'},
+                {x: -105, y: -215, brightness: 3.7, name: 'Eta Piscium'},
+                {x: -75, y: -245, brightness: 4.1, name: 'Omega Piscium'},
+                {x: -45, y: -275, brightness: 4.5, name: 'Delta Piscium'},
+                {x: -15, y: -305, brightness: 4.3, name: 'Epsilon Piscium'},
+                {x: 15, y: -275, brightness: 4.8, name: 'Zeta Piscium'},
+                {x: -165, y: -155, brightness: 4.1, name: 'Fumalsamakah'},
+                {x: -195, y: -125, brightness: 3.8, name: 'Beta Piscium'},
+                {x: -225, y: -155, brightness: 4.9, name: 'Gamma Piscium'}
+            ],
+            lines: [[0,6], [6,7], [7,8], [0,1], [1,2], [2,3], [3,4], [4,5]],
+            info: {
+                type: 'Zodiac Constellation',
+                meaning: 'The Fishes',
+                bestView: 'November',
+                notableFeatures: 'Contains the Vernal Equinox point'
+            }
+        }
+    ];
+}
+            
+            initEvents() {
+                // Mouse events
+                this.canvas.addEventListener('mousedown', (e) => this.handleMouseDown(e));
+                this.canvas.addEventListener('mousemove', (e) => this.handleMouseMove(e));
+                this.canvas.addEventListener('mouseup', (e) => this.handleMouseUp(e));
+                this.canvas.addEventListener('wheel', (e) => this.handleWheel(e));
+                this.canvas.addEventListener('click', (e) => this.handleClick(e));
+                
+                // Basic controls
+                document.getElementById('reset-view').addEventListener('click', () => this.resetView());
+                document.getElementById('toggle-animation').addEventListener('click', () => this.toggleAnimation());
+                document.getElementById('toggle-orbits').addEventListener('click', () => this.toggleOrbits());
+                document.getElementById('toggle-labels').addEventListener('click', () => this.toggleLabels());
+                document.getElementById('toggle-moons').addEventListener('click', () => this.toggleMoons());
+                
+                // Enhanced features
+                document.getElementById('toggle-asteroids').addEventListener('click', () => this.toggleAsteroids());
+                document.getElementById('toggle-comets').addEventListener('click', () => this.toggleComets());
+                document.getElementById('toggle-spacecraft').addEventListener('click', () => this.toggleSpacecraft());
+                document.getElementById('toggle-dwarf-planets').addEventListener('click', () => this.toggleDwarfPlanets());
+                document.getElementById('toggle-constellations').addEventListener('click', () => this.toggleConstellations());
+                document.getElementById('toggle-ellipses').addEventListener('click', () => this.toggleEllipses());
+                document.getElementById('toggle-barycenter').addEventListener('click', () => this.toggleBarycenter());
+                
+                // Time scale events
+                document.getElementById('time-normal').addEventListener('click', () => this.setTimeScale('normal'));
+                document.getElementById('time-1sec-day').addEventListener('click', () => this.setTimeScale('1sec-day'));
+                document.getElementById('time-1sec-week').addEventListener('click', () => this.setTimeScale('1sec-week'));
+                document.getElementById('time-1sec-month').addEventListener('click', () => this.setTimeScale('1sec-month'));
+                
+                // Scale mode events
+                document.getElementById('true-scale').addEventListener('click', () => this.setScaleMode('true-scale'));
+                document.getElementById('enhanced-planets').addEventListener('click', () => this.setScaleMode('enhanced-planets'));
+                document.getElementById('logarithmic').addEventListener('click', () => this.setScaleMode('logarithmic'));
+                
+                // Search functionality
+                document.getElementById('search-box').addEventListener('input', (e) => this.handleSearch(e.target.value));
+                
+                // Comparison functionality
+                document.querySelectorAll('.comparison-planet').forEach(el => {
+                    el.addEventListener('click', () => this.handleComparison(el.dataset.planet));
+                });
+                
+                // Constellation selection
+                document.querySelectorAll('.constellation-item').forEach(el => {
+                    el.addEventListener('click', () => this.highlightConstellation(el.dataset.constellation));
+                });
+            }
+
+            handleSearch(query) {
+                const results = document.getElementById('search-results');
+                results.innerHTML = '';
+                
+                if (!query.trim()) return;
+                
+                const allObjects = [
+                    ...this.planets,
+                    ...this.asteroids.slice(0, 10), // Show only major asteroids
+                    ...this.comets,
+                    ...this.spacecraft,
+                    ...this.dwarfPlanets,
+                    ...this.constellations
+                ];
+                
+                const matches = allObjects.filter(obj => 
+                    obj.name.toLowerCase().includes(query.toLowerCase()) ||
+                    (obj.commonName && obj.commonName.toLowerCase().includes(query.toLowerCase()))
+                ).slice(0, 8); // Limit results
+                
+                matches.forEach(obj => {
+                    const div = document.createElement('div');
+                    div.className = 'search-result';
+                    div.textContent = `${obj.name}${obj.commonName ? ` (${obj.commonName})` : ''} (${obj.type || 'constellation'})`;
+                    div.onclick = () => this.focusOnObject(obj);
+                    results.appendChild(div);
+                });
+            }
+
+            handleComparison(planetName) {
+                const element = document.querySelector(`[data-planet="${planetName}"]`);
+                const planet = this.planets.find(p => p.name === planetName);
+                
+                if (!planet) return;
+                
+                if (this.comparisonPlanets.includes(planetName)) {
+                    // Remove from comparison
+                    this.comparisonPlanets = this.comparisonPlanets.filter(p => p !== planetName);
+                    element.classList.remove('selected');
+                } else if (this.comparisonPlanets.length < 2) {
+                    // Add to comparison
+                    this.comparisonPlanets.push(planetName);
+                    element.classList.add('selected');
+                }
+                
+                this.updateComparison();
+            }
+
+            updateComparison() {
+                const results = document.getElementById('comparison-results');
+                
+                if (this.comparisonPlanets.length < 2) {
+                    results.innerHTML = 'Select 2 planets to compare';
+                    return;
+                }
+                
+                const planet1 = this.planets.find(p => p.name === this.comparisonPlanets[0]);
+                const planet2 = this.planets.find(p => p.name === this.comparisonPlanets[1]);
+                
+                const sizeRatio = (planet1.realRadius / planet2.realRadius).toFixed(2);
+                const distanceRatio = (planet1.realDistance / planet2.realDistance).toFixed(2);
+                
+                results.innerHTML = `
+                    <div>${planet1.name} vs ${planet2.name}:</div>
+                    <div>Size ratio: ${sizeRatio}:1</div>
+                    <div>Distance ratio: ${distanceRatio}:1</div>
+                `;
+            }
+
+            toggleAsteroids() {
+                this.showAsteroids = !this.showAsteroids;
+                const btn = document.getElementById('toggle-asteroids');
+                btn.classList.toggle('active', this.showAsteroids);
+            }
+
+            toggleComets() {
+                this.showComets = !this.showComets;
+                const btn = document.getElementById('toggle-comets');
+                btn.classList.toggle('active', this.showComets);
+            }
+
+            toggleSpacecraft() {
+                this.showSpacecraft = !this.showSpacecraft;
+                const btn = document.getElementById('toggle-spacecraft');
+                btn.classList.toggle('active', this.showSpacecraft);
+            }
+
+            toggleDwarfPlanets() {
+                this.showDwarfPlanets = !this.showDwarfPlanets;
+                const btn = document.getElementById('toggle-dwarf-planets');
+                btn.classList.toggle('active', this.showDwarfPlanets);
+            }
+
+            toggleConstellations() {
+                this.showConstellations = !this.showConstellations;
+                const btn = document.getElementById('toggle-constellations');
+                btn.classList.toggle('active', this.showConstellations);
+                
+                const info = document.getElementById('constellation-info');
+                info.style.display = this.showConstellations ? 'block' : 'none';
+            }
+
+            toggleEllipses() {
+                this.showEllipses = !this.showEllipses;
+                const btn = document.getElementById('toggle-ellipses');
+                btn.classList.toggle('active', this.showEllipses);
+                
+                const info = document.getElementById('ellipse-info');
+                info.style.display = this.showEllipses ? 'block' : 'none';
+            }
+
+            toggleBarycenter() {
+                this.showBarycenter = !this.showBarycenter;
+                const btn = document.getElementById('toggle-barycenter');
+                btn.classList.toggle('active', this.showBarycenter);
+            }
+
+            highlightConstellation(name) {
+                // Highlight the selected constellation in the list
+                document.querySelectorAll('.constellation-item').forEach(el => {
+                    el.style.background = el.dataset.constellation === name ? 
+                        'rgba(0, 255, 136, 0.2)' : 'rgba(255, 255, 255, 0.05)';
+                });
+                
+                // Center view on the constellation
+                const constellation = this.constellations.find(c => c.name === name);
+                if (constellation) {
+                    this.camera.targetX = -constellation.stars[0].x * 1000;
+                    this.camera.targetY = -constellation.stars[0].y * 1000;
+                    this.camera.targetZoom = 0.1;
+                }
+            }
+            
+            getPlanetRadius(planet) {
+                const baseRadius = planet.realRadius / this.baseScale;
+                
+                switch(this.scaleMode) {
+                    case 'true-scale':
+                        // FIXED: Ensure minimum visible size even at high zoom
+                        return Math.max(baseRadius * this.camera.zoom, 1.5);
+                    case 'enhanced-planets':
+                        // FIXED: Better scaling for enhanced mode
+                        return Math.max(baseRadius * this.camera.zoom * 50, 2);
+                    case 'logarithmic':
+                        const logRadius = Math.log10(planet.realRadius) * 2;
+                        return Math.max(logRadius * this.camera.zoom, 2);
+                    default:
+                        return Math.max(baseRadius * this.camera.zoom, 1.5);
+                }
+            }
+
+            getObjectRadius(obj) {
+                if (!obj.realRadius) return 2;
+                
+                const baseRadius = obj.realRadius / this.baseScale;
+                
+                switch(this.scaleMode) {
+                    case 'true-scale':
+                        // FIXED: Ensure minimum visible size
+                        return Math.max(baseRadius * this.camera.zoom, 1.0);
+                    case 'enhanced-planets':
+                        if (obj.type === 'asteroid') return Math.max(baseRadius * this.camera.zoom * 2000, 1.5);
+                        return Math.max(baseRadius * this.camera.zoom * 200, 1.5);
+                    case 'logarithmic':
+                        const logRadius = Math.log10(Math.max(obj.realRadius, 1)) * 1.5;
+                        return Math.max(logRadius * this.camera.zoom, 1.0);
+                    default:
+                        return Math.max(baseRadius * this.camera.zoom, 1.0);
+                }
+            }
+
+            getDistance(obj) {
+                if (!obj.realDistance && obj.realDistance !== 0) return 0;
+                
+                const baseDistance = obj.realDistance / this.baseScale;
+                
+                switch(this.scaleMode) {
+                    case 'logarithmic':
+                        if (obj.realDistance === 0) return 0;
+                        const logDistance = Math.log10(obj.realDistance / 1000000) * 50;
+                        return logDistance;
+                    default:
+                        return baseDistance;
+                }
+            }
+
+            getEllipticalPosition(obj, angle) {
+                if (!this.showEllipses || !obj.eccentricity) {
+                    return {
+                        distance: this.getDistance(obj),
+                        x: Math.cos(angle),
+                        y: Math.sin(angle)
+                    };
+                }
+
+                const a = this.getDistance(obj); // semi-major axis
+                const e = obj.eccentricity;
+                const b = a * Math.sqrt(1 - e * e); // semi-minor axis
+                
+                const x = a * Math.cos(angle);
+                const y = b * Math.sin(angle);
+                const distance = Math.sqrt(x * x + y * y);
+                
+                return {
+                    distance: distance,
+                    x: x / distance,
+                    y: y / distance
+                };
+            }
+            
+            setScaleMode(mode) {
+                this.scaleMode = mode;
+                
+                document.querySelectorAll('.scale-mode-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.getElementById(mode).classList.add('active');
+                
+                const scaleDetails = document.getElementById('scale-details');
+                switch(mode) {
+                    case 'true-scale':
+                        scaleDetails.textContent = 'Astronomically accurate sizes and distances';
+                        break;
+                    case 'enhanced-planets':
+                        scaleDetails.textContent = 'Enhanced visibility for small objects';
+                        break;
+                    case 'logarithmic':
+                        scaleDetails.textContent = 'Logarithmic scaling for system overview';
+                        break;
+                }
+            }
+            
+            setTimeScale(scale) {
+                this.currentTimeScale = scale;
+                this.timeScale = this.timeScaleOptions[scale];
+                
+                document.querySelectorAll('.time-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                document.getElementById(`time-${scale}`).classList.add('active');
+                
+                const timeDisplay = document.getElementById('time-display');
+                switch(scale) {
+                    case 'normal':
+                        timeDisplay.textContent = 'Real Time';
+                        break;
+                    case '1sec-day':
+                        timeDisplay.textContent = '1 Second = 1 Day';
+                        break;
+                    case '1sec-week':
+                        timeDisplay.textContent = '1 Second = 1 Week';
+                        break;
+                    case '1sec-month':
+                        timeDisplay.textContent = '1 Second = 1 Month';
+                        break;
+                }
+            }
+            
+            handleMouseDown(e) {
+                this.mouse.down = true;
+                this.mouse.lastX = e.clientX;
+                this.mouse.lastY = e.clientY;
+            }
+            
+            handleMouseMove(e) {
+                this.mouse.x = e.clientX;
+                this.mouse.y = e.clientY;
+                
+                if (this.mouse.down) {
+                    const deltaX = e.clientX - this.mouse.lastX;
+                    const deltaY = e.clientY - this.mouse.lastY;
+                    
+                    this.camera.targetX += deltaX / this.camera.zoom;
+                    this.camera.targetY += deltaY / this.camera.zoom;
+                    
+                    this.mouse.lastX = e.clientX;
+                    this.mouse.lastY = e.clientY;
+                } else {
+                    this.checkHover(e.clientX, e.clientY);
+                }
+            }
+            
+            handleMouseUp(e) {
+                this.mouse.down = false;
+            }
+            
+            handleWheel(e) {
+                e.preventDefault();
+                const zoomFactor = e.deltaY > 0 ? 0.8 : 1.25;
+                this.camera.targetZoom = Math.max(0.001, Math.min(1000, this.camera.targetZoom * zoomFactor));
+            }
+            
+            handleClick(e) {
+                const obj = this.getObjectAtPosition(e.clientX, e.clientY);
+                if (obj) {
+                    this.focusOnObject(obj);
+                }
+            }
+
+            focusOnObject(obj) {
+                if (!obj) return;
+                
+                let position;
+                if (obj.type === 'spacecraft') {
+                    position = {
+                        x: Math.cos(obj.angle || 0) * (obj.realDistance / this.baseScale),
+                        y: Math.sin(obj.angle || 0) * (obj.realDistance / this.baseScale)
+                    };
+                } else if (obj.stars) {
+                    // For constellations, center on the first star
+                    position = {
+                        x: obj.stars[0].x * 1000,
+                        y: obj.stars[0].y * 1000
+                    };
+                } else {
+                    const elliptical = this.getEllipticalPosition(obj, obj.angle || 0);
+                    position = {
+                        x: elliptical.x * elliptical.distance,
+                        y: elliptical.y * elliptical.distance
+                    };
+                }
+                
+                this.camera.targetX = -position.x;
+                this.camera.targetY = -position.y;
+                
+                // Appropriate zoom level
+                const radius = this.getObjectRadius(obj);
+                if (radius < 10) {
+                    this.camera.targetZoom = Math.min(50, 10 / radius * this.camera.targetZoom);
+                }
+            }
+            
+            checkHover(mouseX, mouseY) {
+                const obj = this.getObjectAtPosition(mouseX, mouseY);
+                
+                if (obj !== this.hoveredObject) {
+                    this.hoveredObject = obj;
+                    
+                    if (obj) {
+                        let tooltipText = `${obj.name}`;
+                        if (obj.commonName) tooltipText += ` (${obj.commonName})`;
+                        if (obj.realRadius) tooltipText += `\nRadius: ${obj.realRadius.toLocaleString()} km`;
+                        if (obj.realDistance) tooltipText += `\nDistance: ${(obj.realDistance / 1000000).toFixed(1)} million km`;
+                        if (obj.status) tooltipText += `\nStatus: ${obj.status}`;
+                        if (obj.launched) tooltipText += `\nLaunched: ${obj.launched}`;
+                        if (obj.info && obj.info.bestView) tooltipText += `\nBest View: ${obj.info.bestView}`;
+                        
+                        this.showTooltip(tooltipText, mouseX, mouseY);
+                    } else {
+                        this.hideTooltip();
+                    }
+                }
+                
+                if (obj && this.tooltip.classList.contains('show')) {
+                    this.tooltip.style.left = mouseX + 'px';
+                    this.tooltip.style.top = mouseY + 'px';
+                }
+            }
+            
+            getObjectAtPosition(mouseX, mouseY) {
+                const centerX = this.canvas.width / 2 + this.camera.x * this.camera.zoom;
+                const centerY = this.canvas.height / 2 + this.camera.y * this.camera.zoom;
+                
+                // FIXED: Only limit asteroids for performance, but keep all visible
+                const allObjects = [
+                    ...this.planets,
+                    ...(this.showAsteroids ? this.asteroids.slice(0, 100) : []), // Increased from 50
+                    ...(this.showComets ? this.comets : []),
+                    ...(this.showSpacecraft ? this.spacecraft : []),
+                    ...(this.showDwarfPlanets ? this.dwarfPlanets : []),
+                    ...(this.showConstellations ? this.constellations : [])
+                ];
+                
+                for (const obj of allObjects) {
+                    let objX, objY;
+                    
+                    if (obj.type === 'spacecraft') {
+                        const distance = obj.realDistance / this.baseScale;
+                        objX = centerX + Math.cos(obj.angle || 0) * distance * this.camera.zoom;
+                        objY = centerY + Math.sin(obj.angle || 0) * distance * this.camera.zoom;
+                    } else if (obj.stars) {
+                        // For constellations, check if we're hovering near any star
+                        for (const star of obj.stars) {
+                            const starX = centerX + star.x * 1000 * this.camera.zoom;
+                            const starY = centerY + star.y * 1000 * this.camera.zoom;
+                            
+                            const distanceToMouse = Math.sqrt((mouseX - starX) ** 2 + (mouseY - starY) ** 2);
+                            // FIXED: Better hit detection for stars
+                            const hitRadius = Math.max(8 * this.camera.zoom, 5);
+                            
+                            if (distanceToMouse < hitRadius) {
+                                return obj;
+                            }
+                        }
+                        continue;
+                    } else {
+                        const elliptical = this.getEllipticalPosition(obj, obj.angle || 0);
+                        objX = centerX + elliptical.x * elliptical.distance * this.camera.zoom;
+                        objY = centerY + elliptical.y * elliptical.distance * this.camera.zoom;
+                    }
+                    
+                    const distanceToMouse = Math.sqrt((mouseX - objX) ** 2 + (mouseY - objY) ** 2);
+                    // FIXED: Better hit radius calculation
+                    const hitRadius = Math.max(this.getObjectRadius(obj) + 3, 5);
+                    
+                    if (distanceToMouse < hitRadius) {
+                        return obj;
+                    }
+                }
+                return null;
+            }
+            
+            showTooltip(text, x, y) {
+                this.tooltip.textContent = text;
+                this.tooltip.style.left = x + 'px';
+                this.tooltip.style.top = y + 'px';
+                this.tooltip.classList.add('show');
+            }
+            
+            hideTooltip() {
+                this.tooltip.classList.remove('show');
+            }
+            
+            resetView() {
+                this.camera.targetX = 0;
+                this.camera.targetY = 0;
+                this.camera.targetZoom = 1;
+            }
+            
+            toggleAnimation() {
+                this.animationPaused = !this.animationPaused;
+                const btn = document.getElementById('toggle-animation');
+                btn.textContent = this.animationPaused ? 'Play' : 'Pause';
+            }
+            
+            toggleOrbits() {
+                this.showOrbits = !this.showOrbits;
+            }
+            
+            toggleLabels() {
+                this.showLabels = !this.showLabels;
+            }
+
+            toggleMoons() {
+                this.showMoons = !this.showMoons;
+            }
+            
+            updateCamera() {
+                const lerpFactor = 0.05;
+                this.camera.x += (this.camera.targetX - this.camera.x) * lerpFactor;
+                this.camera.y += (this.camera.targetY - this.camera.y) * lerpFactor;
+                this.camera.zoom += (this.camera.targetZoom - this.camera.zoom) * lerpFactor;
+                
+                let zoomText = this.camera.zoom < 0.01 ? 
+                    (this.camera.zoom * 1000).toFixed(1) + 'e-3x' : 
+                    this.camera.zoom.toFixed(2) + 'x';
+                
+                document.getElementById('zoom-level').textContent = zoomText;
+            }
+            
+            updateObjects() {
+                if (!this.animationPaused) {
+                    this.time += this.animationSpeed;
+                    
+                    // Update simulated date
+                    this.simulatedDate = new Date(Date.now() + this.time * this.timeScale * 24 * 60 * 60 * 1000);
+                    document.getElementById('current-date').textContent = this.simulatedDate.toLocaleDateString();
+                    
+                    // Update all objects
+                    [...this.planets, ...this.asteroids, ...this.comets, ...this.dwarfPlanets].forEach((obj, index) => {
+                        if (obj.realDistance > 0) { // Skip sun
+                            const speedInRadians = (obj.speed * Math.PI / 180) * this.timeScale / 60;
+                            obj.angle = (obj.angle || 0) + speedInRadians;
+                            
+                            // Update moons
+                            if (obj.moons && obj.moons.length > 0) {
+                                obj.moons.forEach(moon => {
+                                    const moonSpeedInRadians = (moon.speed * Math.PI / 180) * this.timeScale / 60;
+                                    moon.angle = (moon.angle || 0) + moonSpeedInRadians;
+                                });
+                            }
+                        }
+                    });
+                    
+                    // Update spacecraft (they move in straight lines mostly)
+                    this.spacecraft.forEach(craft => {
+                        const speedInRadians = (craft.speed * Math.PI / 180) * this.timeScale / 60;
+                        craft.angle = (craft.angle || 0) + speedInRadians;
+                    });
+                }
+            }
+            
+            
+            render() {
+                this.ctx.fillStyle = '#000';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                this.renderStars();
+                
+                const centerX = this.canvas.width / 2 + this.camera.x * this.camera.zoom;
+                const centerY = this.canvas.height / 2 + this.camera.y * this.camera.zoom;
+                
+                // Draw constellations first (in background)
+                if (this.showConstellations) {
+                    this.renderConstellations(centerX, centerY);
+                }
+                
+                // Draw orbits
+                if (this.showOrbits) {
+                    this.renderOrbits(centerX, centerY);
+                }
+                
+                // Draw all objects
+                this.renderObjects(centerX, centerY);
+                
+                // Draw scale reference
+                this.renderScaleReference();
+            }
+            
+            renderConstellations(centerX, centerY) {
+                this.ctx.lineWidth = 1;
+                
+                this.constellations.forEach(constellation => {
+                    // Draw constellation lines
+                    this.ctx.strokeStyle = 'rgba(100, 150, 255, 0.3)';
+                    this.ctx.setLineDash([5, 3]);
+                    
+                    constellation.lines.forEach(line => {
+                        const star1 = constellation.stars[line[0]];
+                        const star2 = constellation.stars[line[1]];
+                        
+                        const x1 = centerX + star1.x * 1000 * this.camera.zoom;
+                        const y1 = centerY + star1.y * 1000 * this.camera.zoom;
+                        const x2 = centerX + star2.x * 1000 * this.camera.zoom;
+                        const y2 = centerY + star2.y * 1000 * this.camera.zoom;
+                        
+                        this.ctx.beginPath();
+                        this.ctx.moveTo(x1, y1);
+                        this.ctx.lineTo(x2, y2);
+                        this.ctx.stroke();
+                    });
+                    
+                    this.ctx.setLineDash([]);
+                    
+                    // Draw constellation stars
+                    constellation.stars.forEach(star => {
+                        const x = centerX + star.x * 1000 * this.camera.zoom;
+                        const y = centerY + star.y * 1000 * this.camera.zoom;
+                        
+                        // Star size based on brightness
+                        const size = (6 - star.brightness) * 0.8 * this.camera.zoom;
+                        
+                        // Draw star
+                        this.ctx.fillStyle = `rgba(255, 255, 255, ${1 - star.brightness/6})`;
+                        this.ctx.beginPath();
+                        this.ctx.arc(x, y, Math.max(size, 1), 0, Math.PI * 2);
+                        this.ctx.fill();
+                        
+                        // Draw star glow
+                        if (this.camera.zoom > 0.1) {
+                            const gradient = this.ctx.createRadialGradient(
+                                x, y, 0,
+                                x, y, size * 2
+                            );
+                            gradient.addColorStop(0, `rgba(255, 255, 255, ${0.5 - star.brightness/12})`);
+                            gradient.addColorStop(1, 'transparent');
+                            
+                            this.ctx.fillStyle = gradient;
+                            this.ctx.fillRect(x - size * 2, y - size * 2, size * 4, size * 4);
+                        }
+                        
+                        // Draw star name if zoomed in enough
+                        if (this.showLabels && this.camera.zoom > 0.5 && star.name) {
+                            this.renderLabel(star.name, x, y + size + 12, '10px');
+                        }
+                    });
+                    
+                    // Draw constellation name
+                    if (this.showLabels && this.camera.zoom > 0.2) {
+                        const firstStar = constellation.stars[0];
+                        const x = centerX + firstStar.x * 1000 * this.camera.zoom;
+                        const y = centerY + firstStar.y * 1000 * this.camera.zoom;
+                        
+                        this.renderLabel(constellation.name, x, y - 20, '12px');
+                    }
+                });
+            }
+            
+renderOrbits(centerX, centerY) {
+    this.ctx.lineWidth = 1;
     
-    <script type="module" src="universe.js"></script>
+    // Planet orbits - properly handle their elliptical nature
+    this.planets.slice(1).forEach(planet => {
+        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        
+        // Use semi-major axis for proper elliptical orbit calculation
+        const semiMajorAxis = planet.path?.a || planet.realDistance;
+        const e = planet.eccentricity || 0;
+        
+        // Calculate the actual dimensions of the elliptical orbit
+        const a = semiMajorAxis / this.baseScale * this.camera.zoom; // semi-major axis
+        const b = a * Math.sqrt(1 - e * e); // semi-minor axis
+        
+        if (a > 0 && a < 20000) {
+            this.ctx.beginPath();
+            
+            if (this.showEllipses && e > 0) {
+                // Apply orbital rotation based on longitude of ascending node
+                const rotation = planet.path?.omega ? planet.path.omega * Math.PI / 180 : 0;
+                
+                // Draw the elliptical orbit
+                this.ctx.ellipse(centerX, centerY, a, b, rotation, 0, Math.PI * 2);
+            } else {
+                // Fallback to circular approximation
+                this.ctx.arc(centerX, centerY, a, 0, Math.PI * 2);
+            }
+            this.ctx.stroke();
+        }
+    });
+    
+    // Dwarf planet orbits - properly handle high eccentricity
+    if (this.showDwarfPlanets) {
+        this.dwarfPlanets.forEach(dwarf => {
+            this.ctx.strokeStyle = 'rgba(180, 180, 255, 0.2)';
+            
+            // For highly elliptical orbits, we need to calculate based on semi-major axis
+            const semiMajorAxis = dwarf.path?.a || dwarf.realDistance;
+            const e = dwarf.eccentricity || 0;
+            
+            // Calculate the actual dimensions of the elliptical orbit
+            const a = semiMajorAxis / this.baseScale * this.camera.zoom; // semi-major axis
+            const b = a * Math.sqrt(1 - e * e); // semi-minor axis
+            
+            if (a > 0 && a < 15000) {
+                this.ctx.beginPath();
+                
+                // Apply orbital rotation based on longitude of ascending node
+                const rotation = dwarf.path?.omega ? dwarf.path.omega * Math.PI / 180 : 0;
+                
+                // Draw the elliptical orbit
+                this.ctx.ellipse(centerX, centerY, a, b, rotation, 0, Math.PI * 2);
+                this.ctx.stroke();
+                
+                // For extremely eccentric orbits like Sedna, add a visual indicator
+                if (e > 0.5) {
+                    this.ctx.strokeStyle = 'rgba(255, 100, 100, 0.3)';
+                    this.ctx.beginPath();
+                    this.ctx.ellipse(centerX, centerY, a, b, rotation, 0, Math.PI * 2);
+                    this.ctx.stroke();
+                }
+            }
+        });
+    }
+    
+    // Comet orbits
+    if (this.showComets) {
+        this.comets.forEach(comet => {
+            this.ctx.strokeStyle = 'rgba(100, 200, 255, 0.2)';
+            const semiMajorAxis = (comet.aphelion + comet.perihelion) / 2;
+            const e = comet.eccentricity;
+            const a = semiMajorAxis / this.baseScale * this.camera.zoom;
+            const b = a * Math.sqrt(1 - e * e);
+            
+            if (a < 15000 && a > 10) {
+                this.ctx.beginPath();
+                // Apply rotation if comet has orbital parameters
+                const rotation = comet.omega ? comet.omega * Math.PI / 180 : 0;
+                this.ctx.ellipse(centerX, centerY, a, b, rotation, 0, Math.PI * 2);
+                this.ctx.stroke();
+            }
+        });
+    }
+    
+    // Asteroid belt - still show as circular region for visual clarity
+    if (this.showAsteroids) {
+        this.ctx.strokeStyle = 'rgba(100, 100, 100, 0.3)';
+        const innerRadius = 280000000 / this.baseScale * this.camera.zoom;
+        const outerRadius = 480000000 / this.baseScale * this.camera.zoom;
+        
+        if (innerRadius < 15000 && outerRadius > 10) {
+            this.ctx.beginPath();
+            this.ctx.arc(centerX, centerY, innerRadius, 0, Math.PI * 2);
+            this.ctx.stroke();
+            this.ctx.beginPath();
+            this.ctx.arc(centerX, centerY, outerRadius, 0, Math.PI * 2);
+            this.ctx.stroke();
+        }
+    }
+}
+            
+            renderObjects(centerX, centerY) {
+                // Render planets
+                this.planets.forEach(planet => this.renderPlanet(planet, centerX, centerY));
+                
+                // Render additional objects
+                if (this.showAsteroids) {
+                    this.asteroids.forEach(asteroid => this.renderObject(asteroid, centerX, centerY));
+                }
+                
+                if (this.showComets) {
+                    this.comets.forEach(comet => this.renderComet(comet, centerX, centerY));
+                }
+                
+                if (this.showSpacecraft) {
+                    this.spacecraft.forEach(craft => this.renderSpacecraft(craft, centerX, centerY));
+                }
+                
+                if (this.showDwarfPlanets) {
+                    this.dwarfPlanets.forEach(dwarf => this.renderPlanet(dwarf, centerX, centerY));
+                }
+            }
+
+
+            renderPlanet(planet, centerX, centerY) {
+                const elliptical = this.getEllipticalPosition(planet, planet.angle || 0);
+                const planetX = centerX + elliptical.x * elliptical.distance * this.camera.zoom;
+                const planetY = centerY + elliptical.y * elliptical.distance * this.camera.zoom;
+                const radius = this.getPlanetRadius(planet);
+                
+                // FIXED: Much more lenient bounds check - only cull if REALLY far off screen
+                const cullMargin = Math.max(2000, radius * 10); // Dynamic margin based on object size
+                if (planetX < -cullMargin || planetX > this.canvas.width + cullMargin || 
+                    planetY < -cullMargin || planetY > this.canvas.height + cullMargin) {
+                    return;
+                }
+                
+                // Planet glow for Sun or hovered object
+                if (planet.name === 'Sun' || planet === this.hoveredObject) {
+                    const glowRadius = radius * (planet.name === 'Sun' ? 3 : 2);
+                    const gradient = this.ctx.createRadialGradient(
+                        planetX, planetY, 0,
+                        planetX, planetY, glowRadius
+                    );
+                    gradient.addColorStop(0, (planet.glowColor || planet.color) + '60');
+                    gradient.addColorStop(1, 'transparent');
+                    
+                    this.ctx.fillStyle = gradient;
+                    this.ctx.fillRect(
+                        planetX - glowRadius,
+                        planetY - glowRadius,
+                        glowRadius * 2,
+                        glowRadius * 2
+                    );
+                }
+                
+                // Draw planet
+                this.ctx.fillStyle = planet.color;
+                this.ctx.beginPath();
+                this.ctx.arc(planetX, planetY, radius, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // Saturn's rings
+                if (planet.hasRings && radius > 2) {
+                    this.ctx.strokeStyle = '#DDBF94';
+                    this.ctx.lineWidth = Math.max(1, 2 * Math.min(this.camera.zoom, 1));
+                    this.ctx.beginPath();
+                    this.ctx.ellipse(planetX, planetY, radius * 1.8, radius * 0.5, 0, 0, Math.PI * 2);
+                    this.ctx.stroke();
+                    
+                    this.ctx.beginPath();
+                    this.ctx.ellipse(planetX, planetY, radius * 2.2, radius * 0.6, 0, 0, Math.PI * 2);
+                    this.ctx.stroke();
+                }
+                
+                // Draw moons
+                if (planet.moons && this.showMoons && planet.moons.length > 0) {
+                    planet.moons.forEach(moon => {
+                        const moonDistance = moon.realDistance / this.baseScale;
+                        const moonX = planetX + Math.cos(moon.angle || 0) * moonDistance * this.camera.zoom;
+                        const moonY = planetY + Math.sin(moon.angle || 0) * moonDistance * this.camera.zoom;
+                        // FIXED: Better moon radius calculation
+                        const moonRadius = Math.max(moon.realRadius / this.baseScale * this.camera.zoom, 1.0);
+                        
+                        // Moon orbit
+                        if (this.showOrbits && moonDistance * this.camera.zoom > 5) {
+                            this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
+                            this.ctx.lineWidth = 1;
+                            this.ctx.beginPath();
+                            this.ctx.arc(planetX, planetY, moonDistance * this.camera.zoom, 0, Math.PI * 2);
+                            this.ctx.stroke();
+                        }
+                        
+                        // Moon body
+                        this.ctx.fillStyle = moon.color;
+                        this.ctx.beginPath();
+                        this.ctx.arc(moonX, moonY, moonRadius, 0, Math.PI * 2);
+                        this.ctx.fill();
+                        
+                        // Moon label - FIXED: Always show if zoomed enough, regardless of radius
+                        if (this.showLabels && (this.camera.zoom > 5 || moon === this.hoveredObject)) {
+                            this.renderLabel(moon.name, moonX, moonY + moonRadius + 12);
+                        }
+                    });
+                }
+                
+                // Planet labels - FIXED: Show labels more liberally
+                if (this.showLabels && (radius > 1.5 || planet === this.hoveredObject)) {
+                    this.renderLabel(planet.name, planetX, planetY + Math.max(radius + 15, 25));
+                    
+                    // Show additional info when zoomed in
+                    if (this.camera.zoom > 5) {
+                        const infoText = `${planet.realRadius.toLocaleString()} km`;
+                        this.renderLabel(infoText, planetX, planetY + Math.max(radius + 35, 45), '10px');
+                    }
+                }
+            }
+
+            renderObject(obj, centerX, centerY) {
+                const elliptical = this.getEllipticalPosition(obj, obj.angle || 0);
+                const objX = centerX + elliptical.x * elliptical.distance * this.camera.zoom;
+                const objY = centerY + elliptical.y * elliptical.distance * this.camera.zoom;
+                const radius = this.getObjectRadius(obj);
+                
+                // FIXED: More lenient bounds check
+                const cullMargin = Math.max(1000, radius * 5);
+                if (objX < -cullMargin || objX > this.canvas.width + cullMargin || 
+                    objY < -cullMargin || objY > this.canvas.height + cullMargin) {
+                    return;
+                }
+                
+                this.ctx.fillStyle = obj.color;
+                this.ctx.beginPath();
+                this.ctx.arc(objX, objY, radius, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // FIXED: Show labels more liberally
+                if (this.showLabels && (radius > 0.8 || obj === this.hoveredObject)) {
+                    this.renderLabel(obj.name, objX, objY + radius + 12, '10px');
+                }
+            }
+
+            renderComet(comet, centerX, centerY) {
+                // Calculate position along elliptical orbit
+                const a = (comet.aphelion + comet.perihelion) / 2 / this.baseScale;
+                const e = comet.eccentricity;
+                const b = a * Math.sqrt(1 - e * e);
+                
+                const cometX = centerX + Math.cos(comet.angle || 0) * a * this.camera.zoom;
+                const cometY = centerY + Math.sin(comet.angle || 0) * b * this.camera.zoom;
+                const radius = this.getObjectRadius(comet);
+                
+                // FIXED: More lenient bounds check
+                const cullMargin = Math.max(1000, radius * 10);
+                if (cometX < -cullMargin || cometX > this.canvas.width + cullMargin || 
+                    cometY < -cullMargin || cometY > this.canvas.height + cullMargin) {
+                    return;
+                }
+                
+                // Draw comet nucleus
+                this.ctx.fillStyle = comet.color;
+                this.ctx.beginPath();
+                this.ctx.arc(cometX, cometY, radius, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                // Draw comet tail (points away from sun)
+                if (radius > 0.5) {
+                    const sunAngle = Math.atan2(cometY - centerY, cometX - centerX);
+                    const tailLength = Math.min(100, radius * 15); // FIXED: Better tail scaling
+                    
+                    const gradient = this.ctx.createLinearGradient(
+                        cometX, cometY,
+                        cometX + Math.cos(sunAngle) * tailLength,
+                        cometY + Math.sin(sunAngle) * tailLength
+                    );
+                    gradient.addColorStop(0, comet.color + '80');
+                    gradient.addColorStop(1, 'transparent');
+                    
+                    this.ctx.strokeStyle = gradient;
+                    this.ctx.lineWidth = Math.max(1, radius * 2);
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(cometX, cometY);
+                    this.ctx.lineTo(
+                        cometX + Math.cos(sunAngle) * tailLength,
+                        cometY + Math.sin(sunAngle) * tailLength
+                    );
+                    this.ctx.stroke();
+                }
+                
+                // FIXED: Show labels more liberally
+                if (this.showLabels && (radius > 0.8 || comet === this.hoveredObject)) {
+                    this.renderLabel(comet.name, cometX, cometY + radius + 12, '10px');
+                }
+            }
+
+            renderSpacecraft(craft, centerX, centerY) {
+                const distance = craft.realDistance / this.baseScale;
+                const craftX = centerX + Math.cos(craft.angle || 0) * distance * this.camera.zoom;
+                const craftY = centerY + Math.sin(craft.angle || 0) * distance * this.camera.zoom;
+                
+                // FIXED: More lenient bounds check
+                const cullMargin = 1500;
+                if (craftX < -cullMargin || craftX > this.canvas.width + cullMargin || 
+                    craftY < -cullMargin || craftY > this.canvas.height + cullMargin) {
+                    return;
+                }
+                
+                // Draw spacecraft as a diamond
+                // FIXED: Better size calculation for spacecraft
+                const size = Math.max(3, 6 * Math.min(this.camera.zoom, 1));
+                this.ctx.fillStyle = craft.color;
+                this.ctx.beginPath();
+                this.ctx.moveTo(craftX, craftY - size);
+                this.ctx.lineTo(craftX + size, craftY);
+                this.ctx.lineTo(craftX, craftY + size);
+                this.ctx.lineTo(craftX - size, craftY);
+                this.ctx.closePath();
+                this.ctx.fill();
+                
+                // Draw trajectory line
+                if (this.showOrbits) {
+                    this.ctx.strokeStyle = craft.color + '40';
+                    this.ctx.lineWidth = 1;
+                    this.ctx.setLineDash([5, 5]);
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(centerX, centerY);
+                    this.ctx.lineTo(craftX, craftY);
+                    this.ctx.stroke();
+                    this.ctx.setLineDash([]);
+                }
+                
+                // FIXED: Show labels more liberally for spacecraft
+                if (this.showLabels && (size > 2 || craft === this.hoveredObject)) {
+                    this.renderLabel(craft.name, craftX, craftY + size + 12, '10px');
+                }
+            }
+
+            renderLabel(text, x, y, fontSize = '12px') {
+                this.ctx.fillStyle = 'white';
+                this.ctx.font = `${fontSize} Arial`;
+                this.ctx.textAlign = 'center';
+                this.ctx.strokeStyle = 'black';
+                this.ctx.lineWidth = 2;
+                this.ctx.strokeText(text, x, y);
+                this.ctx.fillText(text, x, y);
+            }
+            
+            renderStars() {
+                this.ctx.fillStyle = 'white';
+                for (let i = 0; i < 800; i++) {
+                    const x = (i * 1337) % this.canvas.width;
+                    const y = (i * 7331) % this.canvas.height;
+                    const size = Math.sin(this.time * 10 + i) * 0.5 + 0.8;
+                    
+                    this.ctx.globalAlpha = 0.1 + Math.sin(this.time * 5 + i) * 0.15;
+                    this.ctx.fillRect(x, y, size, size);
+                }
+                this.ctx.globalAlpha = 1;
+            }
+            
+            renderScaleReference() {
+                // Scale bar in bottom right
+                const barWidth = 120;
+                const barHeight = 25;
+                const margin = 30;
+                const x = this.canvas.width - barWidth - margin;
+                const y = this.canvas.height - barHeight - margin * 2;
+                
+                // Calculate distance representation
+                const kmPerPixel = this.baseScale / this.camera.zoom;
+                const barRepresentsKm = barWidth * kmPerPixel;
+                
+                let distanceText;
+                if (barRepresentsKm > 149600000) {
+                    const au = barRepresentsKm / 149600000;
+                    distanceText = `${au.toFixed(1)} AU`;
+                } else if (barRepresentsKm > 1000000) {
+                    const million = barRepresentsKm / 1000000;
+                    distanceText = `${million.toFixed(1)}M km`;
+                } else if (barRepresentsKm > 1000) {
+                    const thousand = barRepresentsKm / 1000;
+                    distanceText = `${thousand.toFixed(0)}k km`;
+                } else {
+                    distanceText = `${barRepresentsKm.toFixed(0)} km`;
+                }
+                
+                // Draw scale bar background
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                this.ctx.fillRect(x - 15, y - 35, barWidth + 30, 60);
+                
+                // Draw scale bar
+                this.ctx.fillStyle = 'white';
+                this.ctx.fillRect(x, y, barWidth, 3);
+                this.ctx.fillRect(x, y - 5, 2, 10);
+                this.ctx.fillRect(x + barWidth - 2, y - 5, 2, 10);
+                
+                // Draw scale text
+                this.ctx.fillStyle = 'white';
+                this.ctx.font = '14px Arial';
+                this.ctx.textAlign = 'center';
+                this.ctx.fillText(distanceText, x + barWidth/2, y - 10);
+                
+                // Additional info
+                this.ctx.font = '10px Arial';
+                this.ctx.fillText(`1 px = ${(kmPerPixel/1000).toFixed(0)}k km`, x + barWidth/2, y + 18);
+            }
+            
+            animate() {
+                this.updateCamera();
+                this.updateObjects();
+                this.render();
+                
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+        
+        // Initialize the enhanced solar system
+        document.addEventListener('DOMContentLoaded', () => {
+            new EnhancedSolarSystem();
+        });
+    </script>
 </body>
 </html>
