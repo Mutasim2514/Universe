@@ -96,6 +96,50 @@
             max-width: 300px;
         }
 
+        .panel-title {
+            color: #00ff88;
+            margin-bottom: 10px;
+            font-weight: bold;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .panel-content {
+            font-size: 14px;
+            color: #a1a1aa;
+            line-height: 1.4;
+        }
+
+/* browsers (Chrome, Edge, Safari, Opera) */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0a1a;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #4b6cff, #9d4edd, #ff4d6d);
+  border-radius: 10px;
+  border: 2px solid #0a0a1a;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.4); /* glow */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #6a82fb, #fc5c7d);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.7);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #9d4edd #0a0a1a;
+}
+
+
         #controls {
             position: absolute;
             bottom: 30px;
@@ -135,21 +179,6 @@
         .control-btn.active, .time-btn.active, .scale-mode-btn.active {
             background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
             box-shadow: 0 0 15px rgba(0, 255, 136, 0.4);
-        }
-
-        .panel-title {
-            color: #00ff88;
-            margin-bottom: 10px;
-            font-weight: bold;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .panel-content {
-            font-size: 14px;
-            color: #a1a1aa;
-            line-height: 1.4;
         }
 
         #search-box {
@@ -357,25 +386,104 @@
 
                 <!-- Constellation Panel -->
                 <div class="panel">
-                    <div class="panel-title">Zodiac Constellations</div>
-                    <div style="max-height: 150px; overflow-y: auto;">
-                        <div class="constellation-item" data-constellation="Aries">Aries (The Ram)</div>
-                        <div class="constellation-item" data-constellation="Taurus">Taurus (The Bull)</div>
-                        <div class="constellation-item" data-constellation="Gemini">Gemini (The Twins)</div>
-                        <div class="constellation-item" data-constellation="Cancer">Cancer (The Crab)</div>
-                        <div class="constellation-item" data-constellation="Leo">Leo (The Lion)</div>
-                        <div class="constellation-item" data-constellation="Virgo">Virgo (The Maiden)</div>
-                        <div class="constellation-item" data-constellation="Libra">Libra (The Scales)</div>
-                        <div class="constellation-item" data-constellation="Scorpius">Scorpius (The Scorpion)</div>
-                        <div class="constellation-item" data-constellation="Sagittarius">Sagittarius (The Archer)</div>
-                        <div class="constellation-item" data-constellation="Capricornus">Capricornus (The Sea Goat)</div>
-                        <div class="constellation-item" data-constellation="Aquarius">Aquarius (The Water Bearer)</div>
-                        <div class="constellation-item" data-constellation="Pisces">Pisces (The Fishes)</div>
-                    </div>
-                </div>
+    <div class="panel-title">All Constellations (88)</div>
+    <div style="max-height: 300px; overflow-y: auto;">
+        <div style="font-weight: bold; margin: 10px 0 5px 0; color: #4a90e2;">Zodiac:</div>
+        <div class="constellation-item" data-constellation="Aquarius">Aquarius (The Water Bearer)</div>
+        <div class="constellation-item" data-constellation="Aries">Aries (The Ram)</div>
+        <div class="constellation-item" data-constellation="Cancer">Cancer (The Crab)</div>
+        <div class="constellation-item" data-constellation="Capricornus">Capricornus (The Sea Goat)</div>
+        <div class="constellation-item" data-constellation="Gemini">Gemini (The Twins)</div>
+        <div class="constellation-item" data-constellation="Leo">Leo (The Lion)</div>
+        <div class="constellation-item" data-constellation="Libra">Libra (The Scales)</div>
+        <div class="constellation-item" data-constellation="Pisces">Pisces (The Fishes)</div>
+        <div class="constellation-item" data-constellation="Sagittarius">Sagittarius (The Archer)</div>
+        <div class="constellation-item" data-constellation="Scorpius">Scorpius (The Scorpion)</div>
+        <div class="constellation-item" data-constellation="Taurus">Taurus (The Bull)</div>
+        <div class="constellation-item" data-constellation="Virgo">Virgo (The Maiden)</div>
+        
+        <div style="font-weight: bold; margin: 10px 0 5px 0; color: #4a90e2;">Northern:</div>
+        <div class="constellation-item" data-constellation="Andromeda">Andromeda (The Princess)</div>
+        <div class="constellation-item" data-constellation="Aquila">Aquila (The Eagle)</div>
+        <div class="constellation-item" data-constellation="Auriga">Auriga (The Charioteer)</div>
+        <div class="constellation-item" data-constellation="Boötes">Boötes (The Herdsman)</div>
+        <div class="constellation-item" data-constellation="Camelopardalis">Camelopardalis (The Giraffe)</div>
+        <div class="constellation-item" data-constellation="Canes Venatici">Canes Venatici (The Hunting Dogs)</div>
+        <div class="constellation-item" data-constellation="Canis Major">Canis Major (The Great Dog)</div>
+        <div class="constellation-item" data-constellation="Canis Minor">Canis Minor (The Little Dog)</div>
+        <div class="constellation-item" data-constellation="Cassiopeia">Cassiopeia (The Queen)</div>
+        <div class="constellation-item" data-constellation="Cepheus">Cepheus (The King)</div>
+        <div class="constellation-item" data-constellation="Coma Berenices">Coma Berenices (Berenice's Hair)</div>
+        <div class="constellation-item" data-constellation="Corona Borealis">Corona Borealis (The Northern Crown)</div>
+        <div class="constellation-item" data-constellation="Cygnus">Cygnus (The Swan)</div>
+        <div class="constellation-item" data-constellation="Delphinus">Delphinus (The Dolphin)</div>
+        <div class="constellation-item" data-constellation="Draco">Draco (The Dragon)</div>
+        <div class="constellation-item" data-constellation="Equuleus">Equuleus (The Little Horse)</div>
+        <div class="constellation-item" data-constellation="Hercules">Hercules (The Hero)</div>
+        <div class="constellation-item" data-constellation="Lacerta">Lacerta (The Lizard)</div>
+        <div class="constellation-item" data-constellation="Leo Minor">Leo Minor (The Little Lion)</div>
+        <div class="constellation-item" data-constellation="Lynx">Lynx (The Lynx)</div>
+        <div class="constellation-item" data-constellation="Lyra">Lyra (The Harp)</div>
+        <div class="constellation-item" data-constellation="Monoceros">Monoceros (The Unicorn)</div>
+        <div class="constellation-item" data-constellation="Ophiuchus">Ophiuchus (The Serpent Bearer)</div>
+        <div class="constellation-item" data-constellation="Orion">Orion (The Hunter)</div>
+        <div class="constellation-item" data-constellation="Pegasus">Pegasus (The Winged Horse)</div>
+        <div class="constellation-item" data-constellation="Perseus">Perseus (The Hero)</div>
+        <div class="constellation-item" data-constellation="Sagitta">Sagitta (The Arrow)</div>
+        <div class="constellation-item" data-constellation="Serpens">Serpens (The Serpent)</div>
+        <div class="constellation-item" data-constellation="Triangulum">Triangulum (The Triangle)</div>
+        <div class="constellation-item" data-constellation="Ursa Major">Ursa Major (The Great Bear)</div>
+        <div class="constellation-item" data-constellation="Ursa Minor">Ursa Minor (The Little Bear)</div>
+        <div class="constellation-item" data-constellation="Vulpecula">Vulpecula (The Fox)</div>
+        
+        <div style="font-weight: bold; margin: 10px 0 5px 0; color: #4a90e2;">Southern:</div>
+        <div class="constellation-item" data-constellation="Antlia">Antlia (The Air Pump)</div>
+        <div class="constellation-item" data-constellation="Apus">Apus (The Bird-of-Paradise)</div>
+        <div class="constellation-item" data-constellation="Ara">Ara (The Altar)</div>
+        <div class="constellation-item" data-constellation="Caelum">Caelum (The Chisel)</div>
+        <div class="constellation-item" data-constellation="Carina">Carina (The Keel)</div>
+        <div class="constellation-item" data-constellation="Centaurus">Centaurus (The Centaur)</div>
+        <div class="constellation-item" data-constellation="Chamaeleon">Chamaeleon (The Chameleon)</div>
+        <div class="constellation-item" data-constellation="Circinus">Circinus (The Compass)</div>
+        <div class="constellation-item" data-constellation="Columba">Columba (The Dove)</div>
+        <div class="constellation-item" data-constellation="Corona Australis">Corona Australis (The Southern Crown)</div>
+        <div class="constellation-item" data-constellation="Crater">Crater (The Cup)</div>
+        <div class="constellation-item" data-constellation="Crux">Crux (The Southern Cross)</div>
+        <div class="constellation-item" data-constellation="Dorado">Dorado (The Swordfish)</div>
+        <div class="constellation-item" data-constellation="Eridanus">Eridanus (The River)</div>
+        <div class="constellation-item" data-constellation="Fornax">Fornax (The Furnace)</div>
+        <div class="constellation-item" data-constellation="Grus">Grus (The Crane)</div>
+        <div class="constellation-item" data-constellation="Horologium">Horologium (The Pendulum Clock)</div>
+        <div class="constellation-item" data-constellation="Hydra">Hydra (The Sea Serpent)</div>
+        <div class="constellation-item" data-constellation="Hydrus">Hydrus (The Water Snake)</div>
+        <div class="constellation-item" data-constellation="Indus">Indus (The Indian)</div>
+        <div class="constellation-item" data-constellation="Lepus">Lepus (The Hare)</div>
+        <div class="constellation-item" data-constellation="Lupus">Lupus (The Wolf)</div>
+        <div class="constellation-item" data-constellation="Mensa">Mensa (The Table Mountain)</div>
+        <div class="constellation-item" data-constellation="Microscopium">Microscopium (The Microscope)</div>
+        <div class="constellation-item" data-constellation="Musca">Musca (The Fly)</div>
+        <div class="constellation-item" data-constellation="Norma">Norma (The Square)</div>
+        <div class="constellation-item" data-constellation="Octans">Octans (The Octant)</div>
+        <div class="constellation-item" data-constellation="Pavo">Pavo (The Peacock)</div>
+        <div class="constellation-item" data-constellation="Phoenix">Phoenix (The Phoenix)</div>
+        <div class="constellation-item" data-constellation="Pictor">Pictor (The Painter's Easel)</div>
+        <div class="constellation-item" data-constellation="Piscis Austrinus">Piscis Austrinus (The Southern Fish)</div>
+        <div class="constellation-item" data-constellation="Puppis">Puppis (The Stern)</div>
+        <div class="constellation-item" data-constellation="Pyxis">Pyxis (The Compass)</div>
+        <div class="constellation-item" data-constellation="Reticulum">Reticulum (The Net)</div>
+        <div class="constellation-item" data-constellation="Sculptor">Sculptor (The Sculptor)</div>
+        <div class="constellation-item" data-constellation="Scutum">Scutum (The Shield)</div>
+        <div class="constellation-item" data-constellation="Sextans">Sextans (The Sextant)</div>
+        <div class="constellation-item" data-constellation="Telescopium">Telescopium (The Telescope)</div>
+        <div class="constellation-item" data-constellation="Triangulum Australe">Triangulum Australe (The Southern Triangle)</div>
+        <div class="constellation-item" data-constellation="Tucana">Tucana (The Toucan)</div>
+        <div class="constellation-item" data-constellation="Vela">Vela (The Sails)</div>
+        <div class="constellation-item" data-constellation="Volans">Volans (The Flying Fish)</div>
+    </div>
+</div>
 
                 <!-- Mission Tracker Panel -->
-                <div class="panel">
+                <!-- <div class="panel">
                     <div class="panel-title">Space Missions</div>
                     <div id="mission-tracker" class="panel-content">
                         <div class="mission-item">
@@ -395,10 +503,10 @@
                             <span>Solar Corona</span>
                         </div>
                     </div>
-                </div>
+                </div> -->
 
                 <!-- Comparison Tool Panel -->
-                <div class="panel">
+                <!-- <div class="panel">
                     <div class="panel-title">Compare Planets</div>
                     <div class="comparison-mode">
                         <div class="comparison-planet" data-planet="Earth">Earth</div>
@@ -407,7 +515,7 @@
                         <div class="comparison-planet" data-planet="Saturn">Saturn</div>
                     </div>
                     <div id="comparison-results" class="panel-content" style="margin-top: 10px; font-size: 11px;"></div>
-                </div>
+                </div> -->
             </div>
             
             <div id="controls">
@@ -3832,6 +3940,7 @@ initDwarfPlanets() {
 
 initConstellations() {
     this.constellations = [
+        // ZODIAC CONSTELLATIONS (12)
         {
             name: 'Aries',
             commonName: 'The Ram',
@@ -4065,6 +4174,1326 @@ initConstellations() {
                 meaning: 'The Fishes',
                 bestView: 'November',
                 notableFeatures: 'Contains the Vernal Equinox point'
+            }
+        },
+
+        // NORTHERN CONSTELLATIONS (28)
+        {
+            name: 'Andromeda',
+            commonName: 'The Princess',
+            stars: [
+                {x: -55, y: -35, brightness: 2.1, name: 'Alpheratz'},
+                {x: -25, y: -5, brightness: 2.1, name: 'Mirach'},
+                {x: 5, y: 25, brightness: 2.1, name: 'Almach'},
+                {x: 35, y: 55, brightness: 4.1, name: 'Delta Andromedae'},
+                {x: -85, y: -65, brightness: 4.5, name: 'Upsilon Andromedae'}
+            ],
+            lines: [[0,4], [0,1], [1,2], [2,3]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Princess',
+                bestView: 'November',
+                notableFeatures: 'Contains Andromeda Galaxy (M31)'
+            }
+        },
+        {
+            name: 'Aquila',
+            commonName: 'The Eagle',
+            stars: [
+                {x: -185, y: 85, brightness: 0.8, name: 'Altair'},
+                {x: -155, y: 115, brightness: 2.7, name: 'Alshain'},
+                {x: -215, y: 55, brightness: 2.7, name: 'Tarazed'},
+                {x: -245, y: 25, brightness: 3.2, name: 'Zeta Aquilae'},
+                {x: -125, y: 145, brightness: 3.4, name: 'Delta Aquilae'},
+                {x: -275, y: -5, brightness: 3.9, name: 'Lambda Aquilae'}
+            ],
+            lines: [[2,0], [0,1], [1,4], [3,2], [2,5]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Eagle',
+                bestView: 'August',
+                notableFeatures: 'Contains bright star Altair'
+            }
+        },
+        {
+            name: 'Auriga',
+            commonName: 'The Charioteer',
+            stars: [
+                {x: 185, y: 125, brightness: 0.1, name: 'Capella'},
+                {x: 155, y: 95, brightness: 1.9, name: 'Menkalinan'},
+                {x: 125, y: 165, brightness: 2.6, name: 'Mahasim'},
+                {x: 95, y: 135, brightness: 3.2, name: 'Hoedus I'},
+                {x: 215, y: 155, brightness: 3.9, name: 'Elnath'}
+            ],
+            lines: [[0,1], [1,3], [3,2], [2,0], [0,4]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Charioteer',
+                bestView: 'January',
+                notableFeatures: 'Contains 6th brightest star Capella'
+            }
+        },
+        {
+            name: 'Boötes',
+            commonName: 'The Herdsman',
+            stars: [
+                {x: -45, y: 285, brightness: -0.1, name: 'Arcturus'},
+                {x: -75, y: 315, brightness: 2.4, name: 'Nekkar'},
+                {x: -15, y: 315, brightness: 2.7, name: 'Seginus'},
+                {x: 15, y: 285, brightness: 3.0, name: 'Izar'},
+                {x: -105, y: 345, brightness: 3.5, name: 'Rho Boötis'},
+                {x: 45, y: 315, brightness: 4.1, name: 'Muphrid'}
+            ],
+            lines: [[0,1], [1,4], [1,2], [2,5], [0,3], [3,5]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Herdsman',
+                bestView: 'June',
+                notableFeatures: 'Contains 4th brightest star Arcturus'
+            }
+        },
+        {
+            name: 'Camelopardalis',
+            commonName: 'The Giraffe',
+            stars: [
+                {x: 285, y: 385, brightness: 4.0, name: 'Beta Camelopardalis'},
+                {x: 255, y: 415, brightness: 4.3, name: 'Alpha Camelopardalis'},
+                {x: 315, y: 355, brightness: 4.6, name: 'Gamma Camelopardalis'},
+                {x: 345, y: 325, brightness: 5.1, name: '7 Camelopardalis'}
+            ],
+            lines: [[1,0], [0,2], [2,3]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Giraffe',
+                bestView: 'February',
+                notableFeatures: 'Large but faint constellation'
+            }
+        },
+        {
+            name: 'Canes Venatici',
+            commonName: 'The Hunting Dogs',
+            stars: [
+                {x: 65, y: 245, brightness: 2.9, name: 'Cor Caroli'},
+                {x: 35, y: 275, brightness: 4.3, name: 'Chara'},
+                {x: 95, y: 215, brightness: 5.2, name: 'La Superba'}
+            ],
+            lines: [[0,1], [0,2]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Hunting Dogs',
+                bestView: 'May',
+                notableFeatures: 'Contains Whirlpool Galaxy (M51)'
+            }
+        },
+        {
+            name: 'Canis Major',
+            commonName: 'The Great Dog',
+            stars: [
+                {x: 245, y: 345, brightness: -1.5, name: 'Sirius'},
+                {x: 215, y: 375, brightness: 1.5, name: 'Adhara'},
+                {x: 275, y: 315, brightness: 1.8, name: 'Wezen'},
+                {x: 185, y: 405, brightness: 1.9, name: 'Mirzam'},
+                {x: 305, y: 285, brightness: 3.0, name: 'Aludra'},
+                {x: 155, y: 435, brightness: 4.1, name: 'Furud'}
+            ],
+            lines: [[0,2], [2,4], [0,1], [1,3], [3,5]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Great Dog',
+                bestView: 'February',
+                notableFeatures: 'Contains brightest star Sirius'
+            }
+        },
+        {
+            name: 'Canis Minor',
+            commonName: 'The Little Dog',
+            stars: [
+                {x: 305, y: 185, brightness: 0.4, name: 'Procyon'},
+                {x: 275, y: 215, brightness: 2.9, name: 'Gomeisa'}
+            ],
+            lines: [[0,1]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Little Dog',
+                bestView: 'February',
+                notableFeatures: 'Contains 8th brightest star Procyon'
+            }
+        },
+        {
+            name: 'Cassiopeia',
+            commonName: 'The Queen',
+            stars: [
+                {x: 65, y: -215, brightness: 2.2, name: 'Schedar'},
+                {x: 95, y: -185, brightness: 2.3, name: 'Caph'},
+                {x: 125, y: -155, brightness: 2.5, name: 'Gamma Cassiopeiae'},
+                {x: 155, y: -125, brightness: 2.7, name: 'Ruchbah'},
+                {x: 185, y: -95, brightness: 3.4, name: 'Segin'}
+            ],
+            lines: [[0,1], [1,2], [2,3], [3,4]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Queen',
+                bestView: 'November',
+                notableFeatures: 'Distinctive W-shaped asterism'
+            }
+        },
+        {
+            name: 'Cepheus',
+            commonName: 'The King',
+            stars: [
+                {x: 155, y: -245, brightness: 2.4, name: 'Alderamin'},
+                {x: 185, y: -215, brightness: 3.2, name: 'Alfirk'},
+                {x: 125, y: -275, brightness: 3.4, name: 'Errai'},
+                {x: 95, y: -305, brightness: 4.2, name: 'Delta Cephei'},
+                {x: 215, y: -185, brightness: 4.3, name: 'Epsilon Cephei'}
+            ],
+            lines: [[0,1], [1,4], [4,2], [2,3], [3,0]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The King',
+                bestView: 'October',
+                notableFeatures: 'Contains prototype Cepheid variable star'
+            }
+        },
+        {
+            name: 'Coma Berenices',
+            commonName: 'Berenice\'s Hair',
+            stars: [
+                {x: 95, y: 185, brightness: 4.3, name: 'Beta Comae Berenices'},
+                {x: 125, y: 155, brightness: 4.9, name: 'Alpha Comae Berenices'},
+                {x: 65, y: 215, brightness: 4.4, name: 'Gamma Comae Berenices'},
+                {x: 155, y: 185, brightness: 5.2, name: '12 Comae Berenices'}
+            ],
+            lines: [[2,0], [0,1], [0,3]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'Berenice\'s Hair',
+                bestView: 'May',
+                notableFeatures: 'Contains Coma Star Cluster'
+            }
+        },
+        {
+            name: 'Corona Borealis',
+            commonName: 'The Northern Crown',
+            stars: [
+                {x: -15, y: 245, brightness: 2.2, name: 'Alphecca'},
+                {x: -45, y: 275, brightness: 3.7, name: 'Nusakan'},
+                {x: 15, y: 215, brightness: 3.8, name: 'Gamma Coronae Borealis'},
+                {x: 45, y: 185, brightness: 4.1, name: 'Delta Coronae Borealis'},
+                {x: -75, y: 305, brightness: 4.6, name: 'Epsilon Coronae Borealis'},
+                {x: 75, y: 155, brightness: 5.1, name: 'Iota Coronae Borealis'}
+            ],
+            lines: [[4,1], [1,0], [0,2], [2,3], [3,5]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Northern Crown',
+                bestView: 'July',
+                notableFeatures: 'Distinctive semicircular crown shape'
+            }
+        },
+        {
+            name: 'Cygnus',
+            commonName: 'The Swan',
+            stars: [
+                {x: -125, y: -85, brightness: 1.3, name: 'Deneb'},
+                {x: -155, y: -55, brightness: 1.3, name: 'Sadr'},
+                {x: -185, y: -25, brightness: 2.5, name: 'Gienah'},
+                {x: -95, y: -115, brightness: 3.2, name: 'Delta Cygni'},
+                {x: -215, y: 5, brightness: 2.9, name: 'Albireo'},
+                {x: -65, y: -145, brightness: 4.2, name: 'Iota Cygni'}
+            ],
+            lines: [[0,1], [1,2], [2,4], [1,3], [3,5]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Swan',
+                bestView: 'September',
+                notableFeatures: 'Northern Cross asterism, contains Deneb'
+            }
+        },
+        {
+            name: 'Delphinus',
+            commonName: 'The Dolphin',
+            stars: [
+                {x: -255, y: 45, brightness: 3.8, name: 'Sualocin'},
+                {x: -285, y: 75, brightness: 3.6, name: 'Rotanev'},
+                {x: -225, y: 15, brightness: 4.0, name: 'Gamma Delphini'},
+                {x: -315, y: 105, brightness: 4.4, name: 'Delta Delphini'},
+                {x: -195, y: -15, brightness: 4.9, name: 'Epsilon Delphini'}
+            ],
+            lines: [[2,0], [0,1], [1,3], [0,4]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Dolphin',
+                bestView: 'September',
+                notableFeatures: 'Compact diamond-shaped constellation'
+            }
+        },
+        {
+            name: 'Draco',
+            commonName: 'The Dragon',
+            stars: [
+                {x: -5, y: -175, brightness: 2.2, name: 'Thuban'},
+                {x: 25, y: -205, brightness: 2.8, name: 'Etamin'},
+                {x: -35, y: -145, brightness: 3.2, name: 'Altais'},
+                {x: 55, y: -175, brightness: 3.3, name: 'Rastaban'},
+                {x: 85, y: -145, brightness: 3.8, name: 'Kuma'},
+                {x: -65, y: -115, brightness: 4.1, name: 'Dziban'},
+                {x: 115, y: -115, brightness: 4.9, name: 'Grumium'}
+            ],
+            lines: [[0,1], [1,3], [3,4], [4,6], [0,2], [2,5]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Dragon',
+                bestView: 'July',
+                notableFeatures: 'Wraps around the north celestial pole'
+            }
+        },
+        {
+            name: 'Equuleus',
+            commonName: 'The Little Horse',
+            stars: [
+                {x: -315, y: 15, brightness: 3.9, name: 'Kitalpha'},
+                {x: -345, y: -15, brightness: 4.7, name: 'Beta Equulei'},
+                {x: -285, y: 45, brightness: 4.5, name: 'Gamma Equulei'},
+                {x: -375, y: -45, brightness: 5.1, name: 'Delta Equulei'}
+            ],
+            lines: [[0,2], [0,1], [1,3]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Little Horse',
+                bestView: 'September',
+                notableFeatures: 'Second smallest constellation'
+            }
+        },
+        {
+            name: 'Hercules',
+            commonName: 'The Hero',
+            stars: [
+                {x: -85, y: 155, brightness: 2.8, name: 'Kornephoros'},
+                {x: -115, y: 125, brightness: 3.1, name: 'Zeta Herculis'},
+                {x: -55, y: 185, brightness: 3.5, name: 'Rasalgethi'},
+                {x: -25, y: 155, brightness: 3.8, name: 'Sarin'},
+                {x: -145, y: 95, brightness: 3.9, name: 'Eta Herculis'},
+                {x: 5, y: 125, brightness: 4.2, name: 'Maasym'}
+            ],
+            lines: [[2,0], [0,1], [1,4], [0,3], [3,5]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Hero',
+                bestView: 'July',
+                notableFeatures: 'Contains globular cluster M13'
+            }
+        },
+        {
+            name: 'Lacerta',
+            commonName: 'The Lizard',
+            stars: [
+                {x: -85, y: -155, brightness: 3.8, name: 'Alpha Lacertae'},
+                {x: -115, y: -125, brightness: 4.4, name: 'Beta Lacertae'},
+                {x: -55, y: -185, brightness: 4.1, name: '1 Lacertae'},
+                {x: -25, y: -215, brightness: 4.9, name: '5 Lacertae'}
+            ],
+            lines: [[1,0], [0,2], [2,3]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Lizard',
+                bestView: 'October',
+                notableFeatures: 'Small faint constellation'
+            }
+        },
+        {
+            name: 'Leo Minor',
+            commonName: 'The Little Lion',
+            stars: [
+                {x: 155, y: 285, brightness: 3.8, name: 'Praecipua'},
+                {x: 185, y: 255, brightness: 4.2, name: 'Beta Leonis Minoris'},
+                {x: 125, y: 315, brightness: 4.5, name: '21 Leonis Minoris'},
+                {x: 95, y: 345, brightness: 5.1, name: '11 Leonis Minoris'}
+            ],
+            lines: [[0,1], [0,2], [2,3]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Little Lion',
+                bestView: 'April',
+                notableFeatures: 'Between Leo and Ursa Major'
+            }
+        },
+        {
+            name: 'Lynx',
+            commonName: 'The Lynx',
+            stars: [
+                {x: 225, y: 355, brightness: 3.1, name: 'Alpha Lyncis'},
+                {x: 195, y: 385, brightness: 4.3, name: '38 Lyncis'},
+                {x: 255, y: 325, brightness: 3.9, name: '31 Lyncis'},
+                {x: 285, y: 295, brightness: 4.6, name: '10 Lyncis'},
+                {x: 165, y: 415, brightness: 5.0, name: '15 Lyncis'}
+            ],
+            lines: [[0,2], [2,3], [1,4], [4,0]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Lynx',
+                bestView: 'March',
+                notableFeatures: 'Large but faint constellation'
+            }
+        },
+        {
+            name: 'Lyra',
+            commonName: 'The Harp',
+            stars: [
+                {x: -155, y: -25, brightness: 0.0, name: 'Vega'},
+                {x: -125, y: 5, brightness: 3.2, name: 'Epsilon Lyrae'},
+                {x: -185, y: 5, brightness: 3.3, name: 'Zeta Lyrae'},
+                {x: -215, y: 35, brightness: 4.3, name: 'Beta Lyrae'},
+                {x: -95, y: 35, brightness: 4.4, name: 'Delta Lyrae'}
+            ],
+            lines: [[0,1], [1,4], [4,3], [3,2], [2,0]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Harp',
+                bestView: 'August',
+                notableFeatures: 'Contains 5th brightest star Vega'
+            }
+        },
+        {
+            name: 'Monoceros',
+            commonName: 'The Unicorn',
+            stars: [
+                {x: 275, y: 245, brightness: 3.9, name: 'Alpha Monocerotis'},
+                {x: 245, y: 275, brightness: 4.2, name: 'Beta Monocerotis'},
+                {x: 305, y: 215, brightness: 4.1, name: 'Gamma Monocerotis'},
+                {x: 335, y: 185, brightness: 4.8, name: 'Delta Monocerotis'},
+                {x: 215, y: 305, brightness: 5.2, name: 'Epsilon Monocerotis'}
+            ],
+            lines: [[0,1], [0,2], [2,3], [1,4]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Unicorn',
+                bestView: 'February',
+                notableFeatures: 'Contains Rosette Nebula'
+            }
+        },
+        {
+            name: 'Ophiuchus',
+            commonName: 'The Serpent Bearer',
+            stars: [
+                {x: -95, y: 65, brightness: 2.1, name: 'Rasalhague'},
+                {x: -65, y: 95, brightness: 2.5, name: 'Sabik'},
+                {x: -125, y: 35, brightness: 2.7, name: 'Han'},
+                {x: -35, y: 125, brightness: 2.8, name: 'Yed Prior'},
+                {x: -5, y: 155, brightness: 3.2, name: 'Yed Posterior'},
+                {x: -155, y: 5, brightness: 3.2, name: 'Cebalrai'}
+            ],
+            lines: [[0,2], [2,5], [0,1], [1,3], [3,4]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Serpent Bearer',
+                bestView: 'July',
+                notableFeatures: '13th zodiac constellation, divides Serpens'
+            }
+        },
+        {
+            name: 'Orion',
+            commonName: 'The Hunter',
+            stars: [
+                {x: 125, y: 485, brightness: 0.1, name: 'Rigel'},
+                {x: 85, y: 415, brightness: 0.4, name: 'Betelgeuse'},
+                {x: 155, y: 455, brightness: 1.6, name: 'Bellatrix'},
+                {x: 95, y: 485, brightness: 1.7, name: 'Alnitak'},
+                {x: 65, y: 485, brightness: 1.8, name: 'Alnilam'},
+                {x: 35, y: 485, brightness: 1.9, name: 'Mintaka'},
+                {x: 5, y: 515, brightness: 2.1, name: 'Saiph'}
+            ],
+            lines: [[1,2], [2,0], [0,3], [3,4], [4,5], [5,6], [6,1], [1,5]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Hunter',
+                bestView: 'January',
+                notableFeatures: 'Most recognizable constellation, Orion\'s Belt'
+            }
+        },
+        {
+            name: 'Pegasus',
+            commonName: 'The Winged Horse',
+            stars: [
+                {x: -125, y: -125, brightness: 2.4, name: 'Markab'},
+                {x: -95, y: -95, brightness: 2.5, name: 'Scheat'},
+                {x: -155, y: -155, brightness: 2.8, name: 'Algenib'},
+                {x: -55, y: -35, brightness: 2.1, name: 'Alpheratz'},
+                {x: -185, y: -125, brightness: 2.9, name: 'Enif'},
+                {x: -215, y: -95, brightness: 3.5, name: 'Homam'}
+            ],
+            lines: [[0,1], [1,3], [3,2], [2,0], [0,4], [4,5]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Winged Horse',
+                bestView: 'October',
+                notableFeatures: 'Great Square of Pegasus asterism'
+            }
+        },
+        {
+            name: 'Perseus',
+            commonName: 'The Hero',
+            stars: [
+                {x: 25, y: -85, brightness: 1.8, name: 'Mirfak'},
+                {x: -5, y: -55, brightness: 2.1, name: 'Algol'},
+                {x: 55, y: -115, brightness: 2.9, name: 'Atik'},
+                {x: 85, y: -85, brightness: 3.4, name: 'Menkib'},
+                {x: -35, y: -25, brightness: 3.8, name: 'Misam'},
+                {x: 115, y: -55, brightness: 4.0, name: 'Epsilon Persei'}
+            ],
+            lines: [[0,2], [2,3], [3,5], [0,1], [1,4]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Hero',
+                bestView: 'December',
+                notableFeatures: 'Contains famous variable star Algol'
+            }
+        },
+        {
+            name: 'Sagitta',
+            commonName: 'The Arrow',
+            stars: [
+                {x: -215, y: 5, brightness: 3.5, name: 'Gamma Sagittae'},
+                {x: -185, y: 25, brightness: 3.8, name: 'Delta Sagittae'},
+                {x: -245, y: -15, brightness: 4.4, name: 'Alpha Sagittae'},
+                {x: -155, y: 45, brightness: 4.4, name: 'Beta Sagittae'}
+            ],
+            lines: [[2,0], [0,1], [1,3]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Arrow',
+                bestView: 'August',
+                notableFeatures: 'Third smallest constellation'
+            }
+        },
+        {
+            name: 'Serpens',
+            commonName: 'The Serpent',
+            stars: [
+                {x: 25, y: 95, brightness: 2.6, name: 'Unukalhai'},
+                {x: 55, y: 125, brightness: 3.7, name: 'Eta Serpentis'},
+                {x: -5, y: 65, brightness: 3.8, name: 'Mu Serpentis'},
+                {x: -275, y: 125, brightness: 3.3, name: 'Eta Serpentis (Cauda)'},
+                {x: -245, y: 95, brightness: 4.1, name: 'Theta Serpentis'},
+                {x: -305, y: 155, brightness: 4.6, name: 'Xi Serpentis'}
+            ],
+            lines: [[2,0], [0,1], [4,3], [3,5]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Serpent',
+                bestView: 'July',
+                notableFeatures: 'Only constellation split into two parts'
+            }
+        },
+        {
+            name: 'Triangulum',
+            commonName: 'The Triangle',
+            stars: [
+                {x: 15, y: -45, brightness: 3.4, name: 'Beta Trianguli'},
+                {x: -15, y: -15, brightness: 3.4, name: 'Alpha Trianguli'},
+                {x: 45, y: -15, brightness: 4.0, name: 'Gamma Trianguli'}
+            ],
+            lines: [[0,1], [1,2], [2,0]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Triangle',
+                bestView: 'December',
+                notableFeatures: 'Contains Triangulum Galaxy (M33)'
+            }
+        },
+        {
+            name: 'Ursa Major',
+            commonName: 'The Great Bear',
+            stars: [
+                {x: 155, y: 185, brightness: 1.8, name: 'Dubhe'},
+                {x: 185, y: 215, brightness: 2.4, name: 'Merak'},
+                {x: 125, y: 245, brightness: 2.4, name: 'Phecda'},
+                {x: 95, y: 275, brightness: 3.3, name: 'Megrez'},
+                {x: 65, y: 305, brightness: 1.9, name: 'Alioth'},
+                {x: 35, y: 335, brightness: 2.2, name: 'Mizar'},
+                {x: 5, y: 365, brightness: 1.9, name: 'Alkaid'}
+            ],
+            lines: [[0,1], [1,2], [2,3], [3,4], [4,5], [5,6]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Great Bear',
+                bestView: 'April',
+                notableFeatures: 'Big Dipper asterism, pointer stars to Polaris'
+            }
+        },
+        {
+            name: 'Ursa Minor',
+            commonName: 'The Little Bear',
+            stars: [
+                {x: 125, y: -305, brightness: 2.0, name: 'Polaris'},
+                {x: 155, y: -275, brightness: 2.1, name: 'Kochab'},
+                {x: 185, y: -245, brightness: 3.1, name: 'Pherkad'},
+                {x: 95, y: -235, brightness: 4.3, name: 'Yildun'},
+                {x: 65, y: -205, brightness: 4.2, name: 'Epsilon Ursae Minoris'},
+                {x: 35, y: -175, brightness: 5.0, name: 'Zeta Ursae Minoris'},
+                {x: 215, y: -215, brightness: 4.9, name: 'Eta Ursae Minoris'}
+            ],
+            lines: [[0,3], [3,4], [4,5], [5,6], [6,2], [2,1], [1,0]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Little Bear',
+                bestView: 'June',
+                notableFeatures: 'Little Dipper asterism, contains North Star'
+            }
+        },
+        {
+            name: 'Vulpecula',
+            commonName: 'The Fox',
+            stars: [
+                {x: -245, y: -25, brightness: 4.4, name: 'Alpha Vulpeculae'},
+                {x: -215, y: -55, brightness: 5.2, name: '23 Vulpeculae'},
+                {x: -275, y: 5, brightness: 4.6, name: '1 Vulpeculae'},
+                {x: -185, y: -85, brightness: 5.8, name: '31 Vulpeculae'}
+            ],
+            lines: [[2,0], [0,1], [1,3]],
+            info: {
+                type: 'Northern Constellation',
+                meaning: 'The Fox',
+                bestView: 'September',
+                notableFeatures: 'Contains Dumbbell Nebula (M27)'
+            }
+        },
+
+        // SOUTHERN CONSTELLATIONS (48)
+        {
+            name: 'Antlia',
+            commonName: 'The Air Pump',
+            stars: [
+                {x: 315, y: 445, brightness: 4.3, name: 'Alpha Antliae'},
+                {x: 285, y: 475, brightness: 4.8, name: 'Epsilon Antliae'},
+                {x: 345, y: 415, brightness: 5.2, name: 'Iota Antliae'}
+            ],
+            lines: [[0,1], [0,2]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Air Pump',
+                bestView: 'April',
+                notableFeatures: 'Modern constellation, faint stars'
+            }
+        },
+        {
+            name: 'Apus',
+            commonName: 'The Bird-of-Paradise',
+            stars: [
+                {x: -185, y: 525, brightness: 3.8, name: 'Alpha Apodis'},
+                {x: -155, y: 555, brightness: 4.2, name: 'Gamma Apodis'},
+                {x: -215, y: 495, brightness: 4.2, name: 'Beta Apodis'},
+                {x: -125, y: 525, brightness: 4.8, name: 'Delta Apodis'}
+            ],
+            lines: [[2,0], [0,1], [1,3]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Bird-of-Paradise',
+                bestView: 'July',
+                notableFeatures: 'Contains south celestial pole'
+            }
+        },
+        {
+            name: 'Ara',
+            commonName: 'The Altar',
+            stars: [
+                {x: -245, y: 395, brightness: 2.8, name: 'Beta Arae'},
+                {x: -215, y: 425, brightness: 3.1, name: 'Alpha Arae'},
+                {x: -185, y: 455, brightness: 3.3, name: 'Gamma Arae'},
+                {x: -155, y: 485, brightness: 3.6, name: 'Delta Arae'},
+                {x: -275, y: 365, brightness: 3.8, name: 'Zeta Arae'}
+            ],
+            lines: [[4,0], [0,1], [1,2], [2,3]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Altar',
+                bestView: 'July',
+                notableFeatures: 'Contains several star clusters'
+            }
+        },
+        {
+            name: 'Caelum',
+            commonName: 'The Chisel',
+            stars: [
+                {x: 185, y: 585, brightness: 4.4, name: 'Alpha Caeli'},
+                {x: 155, y: 615, brightness: 5.1, name: 'Beta Caeli'},
+                {x: 215, y: 555, brightness: 4.6, name: 'Gamma Caeli'}
+            ],
+            lines: [[2,0], [0,1]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Chisel',
+                bestView: 'January',
+                notableFeatures: 'Very faint southern constellation'
+            }
+        },
+        {
+            name: 'Carina',
+            commonName: 'The Keel',
+            stars: [
+                {x: 95, y: 655, brightness: -0.7, name: 'Canopus'},
+                {x: 125, y: 685, brightness: 1.9, name: 'Miaplacidus'},
+                {x: 155, y: 715, brightness: 2.3, name: 'Avior'},
+                {x: 185, y: 745, brightness: 2.8, name: 'Aspidiske'},
+                {x: 65, y: 625, brightness: 3.4, name: 'Tureis'},
+                {x: 35, y: 595, brightness: 3.2, name: 'Scutulum'}
+            ],
+            lines: [[0,4], [4,5], [0,1], [1,2], [2,3]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Keel',
+                bestView: 'March',
+                notableFeatures: 'Contains 2nd brightest star Canopus'
+            }
+        },
+        {
+            name: 'Centaurus',
+            commonName: 'The Centaur',
+            stars: [
+                {x: -35, y: 485, brightness: -0.3, name: 'Alpha Centauri'},
+                {x: -65, y: 515, brightness: 0.6, name: 'Beta Centauri'},
+                {x: -95, y: 455, brightness: 2.1, name: 'Gamma Centauri'},
+                {x: -5, y: 455, brightness: 2.6, name: 'Epsilon Centauri'},
+                {x: 25, y: 425, brightness: 2.3, name: 'Eta Centauri'},
+                {x: -125, y: 425, brightness: 2.3, name: 'Delta Centauri'}
+            ],
+            lines: [[0,1], [1,2], [2,5], [0,3], [3,4]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Centaur',
+                bestView: 'May',
+                notableFeatures: 'Contains closest star system to Sun'
+            }
+        },
+        {
+            name: 'Chamaeleon',
+            commonName: 'The Chameleon',
+            stars: [
+                {x: 5, y: 625, brightness: 4.1, name: 'Alpha Chamaeleontis'},
+                {x: 35, y: 655, brightness: 4.3, name: 'Gamma Chamaeleontis'},
+                {x: -25, y: 595, brightness: 4.2, name: 'Beta Chamaeleontis'},
+                {x: 65, y: 685, brightness: 5.5, name: 'Delta Chamaeleontis'}
+            ],
+            lines: [[2,0], [0,1], [1,3]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Chameleon',
+                bestView: 'April',
+                notableFeatures: 'Small circumpolar constellation'
+            }
+        },
+        {
+            name: 'Circinus',
+            commonName: 'The Compass',
+            stars: [
+                {x: -125, y: 535, brightness: 3.2, name: 'Alpha Circini'},
+                {x: -95, y: 565, brightness: 4.1, name: 'Beta Circini'},
+                {x: -155, y: 505, brightness: 4.5, name: 'Gamma Circini'}
+            ],
+            lines: [[2,0], [0,1]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Compass',
+                bestView: 'June',
+                notableFeatures: 'Small, faint constellation near Centaurus'
+            }
+        },
+        {
+            name: 'Columba',
+            commonName: 'The Dove',
+            stars: [
+                {x: 215, y: 535, brightness: 2.6, name: 'Phact'},
+                {x: 185, y: 505, brightness: 3.1, name: 'Wazn'},
+                {x: 245, y: 565, brightness: 3.9, name: 'Gamma Columbae'},
+                {x: 275, y: 595, brightness: 4.4, name: 'Delta Columbae'}
+            ],
+            lines: [[1,0], [0,2], [2,3]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Dove',
+                bestView: 'February',
+                notableFeatures: 'Represents Noah\'s dove'
+            }
+        },
+        {
+            name: 'Corona Australis',
+            commonName: 'The Southern Crown',
+            stars: [
+                {x: -275, y: 295, brightness: 4.1, name: 'Alpha Coronae Australis'},
+                {x: -245, y: 325, brightness: 4.1, name: 'Beta Coronae Australis'},
+                {x: -305, y: 265, brightness: 4.2, name: 'Gamma Coronae Australis'},
+                {x: -215, y: 355, brightness: 4.6, name: 'Epsilon Coronae Australis'},
+                {x: -335, y: 235, brightness: 5.1, name: 'Zeta Coronae Australis'}
+            ],
+            lines: [[4,2], [2,0], [0,1], [1,3]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Southern Crown',
+                bestView: 'August',
+                notableFeatures: 'Southern counterpart to Corona Borealis'
+            }
+        },
+        {
+            name: 'Crater',
+            commonName: 'The Cup',
+            stars: [
+                {x: 5, y: 455, brightness: 3.6, name: 'Labrum'},
+                {x: 35, y: 485, brightness: 4.1, name: 'Alpha Crateris'},
+                {x: -25, y: 425, brightness: 4.5, name: 'Gamma Crateris'},
+                {x: 65, y: 515, brightness: 3.8, name: 'Beta Crateris'},
+                {x: -55, y: 395, brightness: 4.7, name: 'Epsilon Crateris'}
+            ],
+            lines: [[4,2], [2,0], [0,1], [1,3]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Cup',
+                bestView: 'April',
+                notableFeatures: 'Cup of Apollo in mythology'
+            }
+        },
+        {
+            name: 'Crux',
+            commonName: 'The Southern Cross',
+            stars: [
+                {x: -65, y: 585, brightness: 0.8, name: 'Acrux'},
+                {x: -35, y: 555, brightness: 1.3, name: 'Gacrux'},
+                {x: -5, y: 585, brightness: 1.6, name: 'Becrux'},
+                {x: 25, y: 615, brightness: 2.8, name: 'Delta Crucis'},
+                {x: -95, y: 615, brightness: 4.0, name: 'Epsilon Crucis'}
+            ],
+            lines: [[1,0], [0,2], [2,3], [1,4]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Southern Cross',
+                bestView: 'May',
+                notableFeatures: 'Smallest constellation, points to south pole'
+            }
+        },
+        {
+            name: 'Dorado',
+            commonName: 'The Swordfish',
+            stars: [
+                {x: 125, y: 575, brightness: 3.3, name: 'Alpha Doradus'},
+                {x: 95, y: 605, brightness: 3.8, name: 'Beta Doradus'},
+                {x: 155, y: 545, brightness: 4.3, name: 'Gamma Doradus'},
+                {x: 65, y: 635, brightness: 4.7, name: 'Delta Doradus'}
+            ],
+            lines: [[0,1], [1,3], [0,2]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Swordfish',
+                bestView: 'January',
+                notableFeatures: 'Contains Large Magellanic Cloud'
+            }
+        },
+        {
+            name: 'Eridanus',
+            commonName: 'The River',
+            stars: [
+                {x: 85, y: 55, brightness: 0.5, name: 'Achernar'},
+                {x: 115, y: 385, brightness: 2.9, name: 'Cursa'},
+                {x: 145, y: 355, brightness: 3.2, name: 'Zaurak'},
+                {x: 75, y: 325, brightness: 3.7, name: 'Rana'},
+                {x: 45, y: 295, brightness: 3.9, name: 'Beid'},
+                {x: 175, y: 185, brightness: 4.0, name: 'Keid'},
+                {x: 205, y: 155, brightness: 4.3, name: '40 Eridani'}
+            ],
+            lines: [[6,5], [5,4], [4,3], [3,2], [2,1], [1,0]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The River',
+                bestView: 'December',
+                notableFeatures: 'Longest constellation, contains Achernar'
+            }
+        },
+        {
+            name: 'Fornax',
+            commonName: 'The Furnace',
+            stars: [
+                {x: -75, y: 575, brightness: 3.9, name: 'Alpha Fornacis'},
+                {x: -45, y: 605, brightness: 4.5, name: 'Beta Fornacis'},
+                {x: -105, y: 545, brightness: 4.7, name: 'Nu Fornacis'},
+                {x: -15, y: 635, brightness: 5.8, name: 'Omega Fornacis'}
+            ],
+            lines: [[2,0], [0,1], [1,3]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Furnace',
+                bestView: 'December',
+                notableFeatures: 'Contains Fornax Dwarf Galaxy'
+            }
+        },
+        {
+            name: 'Grus',
+            commonName: 'The Crane',
+            stars: [
+                {x: -365, y: 185, brightness: 1.7, name: 'Alnair'},
+                {x: -335, y: 215, brightness: 2.1, name: 'Gruid'},
+                {x: -305, y: 245, brightness: 3.0, name: 'Gamma Gruis'},
+                {x: -395, y: 155, brightness: 3.5, name: 'Delta Gruis'},
+                {x: -275, y: 275, brightness: 3.5, name: 'Epsilon Gruis'}
+            ],
+            lines: [[3,0], [0,1], [1,2], [2,4]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Crane',
+                bestView: 'October',
+                notableFeatures: 'Contains bright star Alnair'
+            }
+        },
+        {
+            name: 'Horologium',
+            commonName: 'The Pendulum Clock',
+            stars: [
+                {x: 75, y: 545, brightness: 3.9, name: 'Alpha Horologii'},
+                {x: 105, y: 515, brightness: 4.9, name: 'Beta Horologii'},
+                {x: 45, y: 575, brightness: 5.4, name: 'Zeta Horologii'},
+                {x: 135, y: 485, brightness: 5.2, name: 'Delta Horologii'}
+            ],
+            lines: [[0,1], [1,3], [0,2]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Pendulum Clock',
+                bestView: 'December',
+                notableFeatures: 'Named after pendulum clock invention'
+            }
+        },
+        {
+            name: 'Hydra',
+            commonName: 'The Sea Serpent',
+            stars: [
+                {x: 265, y: 415, brightness: 2.0, name: 'Alphard'},
+                {x: 235, y: 385, brightness: 3.1, name: 'Gamma Hydrae'},
+                {x: 205, y: 355, brightness: 3.9, name: 'Zeta Hydrae'},
+                {x: 175, y: 325, brightness: 4.0, name: 'Nu Hydrae'},
+                {x: 145, y: 295, brightness: 4.1, name: 'Mu Hydrae'},
+                {x: 295, y: 445, brightness: 3.4, name: 'Beta Hydrae'},
+                {x: 325, y: 475, brightness: 4.3, name: 'Xi Hydrae'}
+            ],
+            lines: [[4,3], [3,2], [2,1], [1,0], [0,5], [5,6]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Sea Serpent',
+                bestView: 'April',
+                notableFeatures: 'Longest constellation by area'
+            }
+        },
+        {
+            name: 'Hydrus',
+            commonName: 'The Water Snake',
+            stars: [
+                {x: 45, y: 665, brightness: 2.8, name: 'Alpha Hydri'},
+                {x: 15, y: 695, brightness: 2.8, name: 'Beta Hydri'},
+                {x: 75, y: 635, brightness: 3.2, name: 'Gamma Hydri'}
+            ],
+            lines: [[1,0], [0,2]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Water Snake',
+                bestView: 'December',
+                notableFeatures: 'Small constellation near south pole'
+            }
+        },
+        {
+            name: 'Indus',
+            commonName: 'The Indian',
+            stars: [
+                {x: -315, y: 385, brightness: 3.1, name: 'Alpha Indi'},
+                {x: -285, y: 415, brightness: 3.7, name: 'Beta Indi'},
+                {x: -345, y: 355, brightness: 4.7, name: 'Delta Indi'},
+                {x: -255, y: 445, brightness: 4.4, name: 'Epsilon Indi'}
+            ],
+            lines: [[2,0], [0,1], [1,3]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Indian',
+                bestView: 'September',
+                notableFeatures: 'Represents a Native American'
+            }
+        },
+        {
+            name: 'Lepus',
+            commonName: 'The Hare',
+            stars: [
+                {x: 155, y: 515, brightness: 2.6, name: 'Arneb'},
+                {x: 125, y: 485, brightness: 2.8, name: 'Nihal'},
+                {x: 185, y: 485, brightness: 3.3, name: 'Epsilon Leporis'},
+                {x: 95, y: 515, brightness: 3.8, name: 'Mu Leporis'},
+                {x: 215, y: 515, brightness: 3.2, name: 'Zeta Leporis'}
+            ],
+            lines: [[3,1], [1,0], [0,2], [0,4]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Hare',
+                bestView: 'January',
+                notableFeatures: 'Hunted by Orion in mythology'
+            }
+        },
+        {
+            name: 'Lupus',
+            commonName: 'The Wolf',
+            stars: [
+                {x: -155, y: 395, brightness: 2.3, name: 'Alpha Lupi'},
+                {x: -125, y: 425, brightness: 2.7, name: 'Beta Lupi'},
+                {x: -185, y: 365, brightness: 2.8, name: 'Gamma Lupi'},
+                {x: -95, y: 455, brightness: 3.2, name: 'Delta Lupi'},
+                {x: -215, y: 335, brightness: 3.4, name: 'Epsilon Lupi'},
+                {x: -65, y: 485, brightness: 3.6, name: 'Zeta Lupi'}
+            ],
+            lines: [[4,2], [2,0], [0,1], [1,3], [3,5]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Wolf',
+                bestView: 'June',
+                notableFeatures: 'Contains many bright stars'
+            }
+        },
+        {
+            name: 'Mensa',
+            commonName: 'The Table Mountain',
+            stars: [
+                {x: 65, y: 705, brightness: 5.1, name: 'Alpha Mensae'},
+                {x: 35, y: 735, brightness: 5.3, name: 'Gamma Mensae'},
+                {x: 95, y: 675, brightness: 5.5, name: 'Beta Mensae'}
+            ],
+            lines: [[1,0], [0,2]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Table Mountain',
+                bestView: 'January',
+                notableFeatures: 'Faintest constellation, contains LMC'
+            }
+        },
+        {
+            name: 'Microscopium',
+            commonName: 'The Microscope',
+            stars: [
+                {x: -335, y: 155, brightness: 4.7, name: 'Gamma Microscopii'},
+                {x: -305, y: 185, brightness: 4.9, name: 'Epsilon Microscopii'},
+                {x: -365, y: 125, brightness: 5.0, name: 'Alpha Microscopii'},
+                {x: -275, y: 215, brightness: 6.0, name: 'Theta Microscopii'}
+            ],
+            lines: [[2,0], [0,1], [1,3]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Microscope',
+                bestView: 'September',
+                notableFeatures: 'Very faint constellation'
+            }
+        },
+        {
+            name: 'Musca',
+            commonName: 'The Fly',
+            stars: [
+                {x: -5, y: 645, brightness: 2.7, name: 'Alpha Muscae'},
+                {x: 25, y: 675, brightness: 3.1, name: 'Beta Muscae'},
+                {x: -35, y: 615, brightness: 3.6, name: 'Gamma Muscae'},
+                {x: 55, y: 705, brightness: 3.6, name: 'Delta Muscae'},
+                {x: -65, y: 585, brightness: 4.1, name: 'Lambda Muscae'}
+            ],
+            lines: [[4,2], [2,0], [0,1], [1,3]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Fly',
+                bestView: 'May',
+                notableFeatures: 'Small constellation near Crux'
+            }
+        },
+        {
+            name: 'Norma',
+            commonName: 'The Square',
+            stars: [
+                {x: -215, y: 455, brightness: 4.0, name: 'Gamma Normae'},
+                {x: -185, y: 485, brightness: 4.6, name: 'Epsilon Normae'},
+                {x: -245, y: 425, brightness: 5.1, name: 'Eta Normae'},
+                {x: -155, y: 515, brightness: 4.5, name: 'Iota Normae'}
+            ],
+            lines: [[2,0], [0,1], [1,3]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Square',
+                bestView: 'July',
+                notableFeatures: 'Small constellation, no bright stars'
+            }
+        },
+        {
+            name: 'Octans',
+            commonName: 'The Octant',
+            stars: [
+                {x: -95, y: 685, brightness: 5.1, name: 'Nu Octantis'},
+                {x: -125, y: 715, brightness: 4.1, name: 'Beta Octantis'},
+                {x: -65, y: 655, brightness: 5.5, name: 'Sigma Octantis'},
+                {x: -155, y: 745, brightness: 4.3, name: 'Delta Octantis'}
+            ],
+            lines: [[1,0], [0,2], [1,3]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Octant',
+                bestView: 'October',
+                notableFeatures: 'Contains south celestial pole'
+            }
+        },
+        {
+            name: 'Pavo',
+            commonName: 'The Peacock',
+            stars: [
+                {x: -245, y: 485, brightness: 1.9, name: 'Peacock'},
+                {x: -215, y: 515, brightness: 3.4, name: 'Beta Pavonis'},
+                {x: -275, y: 455, brightness: 4.2, name: 'Eta Pavonis'},
+                {x: -185, y: 545, brightness: 3.6, name: 'Delta Pavonis'},
+                {x: -305, y: 425, brightness: 4.4, name: 'Epsilon Pavonis'}
+            ],
+            lines: [[4,2], [2,0], [0,1], [1,3]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Peacock',
+                bestView: 'August',
+                notableFeatures: 'Contains bright star Peacock'
+            }
+        },
+        {
+            name: 'Phoenix',
+            commonName: 'The Phoenix',
+            stars: [
+                {x: -155, y: 485, brightness: 2.4, name: 'Ankaa'},
+                {x: -125, y: 515, brightness: 3.3, name: 'Beta Phoenicis'},
+                {x: -185, y: 455, brightness: 3.4, name: 'Gamma Phoenicis'},
+                {x: -95, y: 545, brightness: 4.0, name: 'Epsilon Phoenicis'},
+                {x: -215, y: 425, brightness: 4.4, name: 'Zeta Phoenicis'}
+            ],
+            lines: [[4,2], [2,0], [0,1], [1,3]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Phoenix',
+                bestView: 'November',
+                notableFeatures: 'Named after mythical bird'
+            }
+        },
+        {
+            name: 'Pictor',
+            commonName: 'The Painter\'s Easel',
+            stars: [
+                {x: 155, y: 635, brightness: 3.3, name: 'Alpha Pictoris'},
+                {x: 125, y: 665, brightness: 3.9, name: 'Beta Pictoris'},
+                {x: 185, y: 605, brightness: 4.5, name: 'Gamma Pictoris'}
+            ],
+            lines: [[2,0], [0,1]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Painter\'s Easel',
+                bestView: 'January',
+                notableFeatures: 'Contains debris disk around Beta Pictoris'
+            }
+        },
+        {
+            name: 'Piscis Austrinus',
+            commonName: 'The Southern Fish',
+            stars: [
+                {x: -365, y: 95, brightness: 1.2, name: 'Fomalhaut'},
+                {x: -335, y: 125, brightness: 4.2, name: 'Epsilon Piscis Austrini'},
+                {x: -395, y: 65, brightness: 4.4, name: 'Delta Piscis Austrini'},
+                {x: -305, y: 155, brightness: 4.8, name: 'Beta Piscis Austrini'},
+                {x: -275, y: 185, brightness: 4.2, name: 'Gamma Piscis Austrini'}
+            ],
+            lines: [[2,0], [0,1], [1,3], [3,4]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Southern Fish',
+                bestView: 'October',
+                notableFeatures: 'Contains bright star Fomalhaut'
+            }
+        },
+        {
+            name: 'Puppis',
+            commonName: 'The Stern',
+            stars: [
+                {x: 305, y: 585, brightness: 2.3, name: 'Naos'},
+                {x: 275, y: 615, brightness: 2.7, name: 'Rho Puppis'},
+                {x: 245, y: 645, brightness: 3.2, name: 'Xi Puppis'},
+                {x: 335, y: 555, brightness: 2.8, name: 'Pi Puppis'},
+                {x: 365, y: 525, brightness: 3.3, name: 'Sigma Puppis'},
+                {x: 215, y: 675, brightness: 3.6, name: 'Tau Puppis'}
+            ],
+            lines: [[0,3], [3,4], [0,1], [1,2], [2,5]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Stern',
+                bestView: 'February',
+                notableFeatures: 'Part of ancient Argo Navis'
+            }
+        },
+        {
+            name: 'Pyxis',
+            commonName: 'The Compass',
+            stars: [
+                {x: 345, y: 485, brightness: 3.7, name: 'Alpha Pyxidis'},
+                {x: 315, y: 515, brightness: 4.0, name: 'Beta Pyxidis'},
+                {x: 375, y: 455, brightness: 4.0, name: 'Gamma Pyxidis'},
+                {x: 285, y: 545, brightness: 4.9, name: 'Kappa Pyxidis'}
+            ],
+            lines: [[0,1], [1,3], [0,2]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Compass',
+                bestView: 'March',
+                notableFeatures: 'Small constellation, part of old Argo'
+            }
+        },
+        {
+            name: 'Reticulum',
+            commonName: 'The Net',
+            stars: [
+                {x: 105, y: 685, brightness: 3.4, name: 'Alpha Reticuli'},
+                {x: 75, y: 715, brightness: 3.8, name: 'Beta Reticuli'},
+                {x: 135, y: 655, brightness: 4.5, name: 'Epsilon Reticuli'},
+                {x: 45, y: 745, brightness: 4.6, name: 'Delta Reticuli'}
+            ],
+            lines: [[0,1], [1,3], [0,2]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Net',
+                bestView: 'December',
+                notableFeatures: 'Small constellation near LMC'
+            }
+        },
+        {
+            name: 'Sculptor',
+            commonName: 'The Sculptor',
+            stars: [
+                {x: -195, y: 455, brightness: 4.3, name: 'Alpha Sculptoris'},
+                {x: -165, y: 485, brightness: 4.4, name: 'Beta Sculptoris'},
+                {x: -225, y: 425, brightness: 4.4, name: 'Gamma Sculptoris'},
+                {x: -135, y: 515, brightness: 4.6, name: 'Delta Sculptoris'}
+            ],
+            lines: [[2,0], [0,1], [1,3]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Sculptor',
+                bestView: 'November',
+                notableFeatures: 'Contains Sculptor Galaxy and south pole'
+            }
+        },
+        {
+            name: 'Scutum',
+            commonName: 'The Shield',
+            stars: [
+                {x: -245, y: 155, brightness: 3.8, name: 'Alpha Scuti'},
+                {x: -215, y: 185, brightness: 4.2, name: 'Beta Scuti'},
+                {x: -275, y: 125, brightness: 4.7, name: 'Gamma Scuti'},
+                {x: -185, y: 215, brightness: 4.7, name: 'Delta Scuti'},
+                {x: -305, y: 95, brightness: 4.8, name: 'Epsilon Scuti'}
+            ],
+            lines: [[4,2], [2,0], [0,1], [1,3]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Shield',
+                bestView: 'August',
+                notableFeatures: 'Contains Wild Duck Cluster'
+            }
+        },
+        {
+            name: 'Sextans',
+            commonName: 'The Sextant',
+            stars: [
+                {x: 35, y: 385, brightness: 4.5, name: 'Alpha Sextantis'},
+                {x: 65, y: 415, brightness: 5.1, name: 'Beta Sextantis'},
+                {x: 5, y: 355, brightness: 5.1, name: 'Gamma Sextantis'},
+                {x: 95, y: 445, brightness: 5.2, name: 'Delta Sextantis'}
+            ],
+            lines: [[2,0], [0,1], [1,3]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Sextant',
+                bestView: 'April',
+                notableFeatures: 'Very faint constellation'
+            }
+        },
+        {
+            name: 'Telescopium',
+            commonName: 'The Telescope',
+            stars: [
+                {x: -275, y: 335, brightness: 3.5, name: 'Alpha Telescopii'},
+                {x: -245, y: 365, brightness: 4.1, name: 'Zeta Telescopii'},
+                {x: -305, y: 305, brightness: 4.9, name: 'Epsilon Telescopii'},
+                {x: -215, y: 395, brightness: 5.0, name: 'Delta Telescopii'}
+            ],
+            lines: [[2,0], [0,1], [1,3]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Telescope',
+                bestView: 'August',
+                notableFeatures: 'Small southern constellation'
+            }
+        },
+        {
+            name: 'Triangulum Australe',
+            commonName: 'The Southern Triangle',
+            stars: [
+                {x: -125, y: 595, brightness: 1.9, name: 'Atria'},
+                {x: -95, y: 625, brightness: 2.9, name: 'Beta Trianguli Australis'},
+                {x: -155, y: 565, brightness: 2.9, name: 'Gamma Trianguli Australis'}
+            ],
+            lines: [[0,1], [1,2], [2,0]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Southern Triangle',
+                bestView: 'June',
+                notableFeatures: 'Bright southern triangle'
+            }
+        },
+        {
+            name: 'Tucana',
+            commonName: 'The Toucan',
+            stars: [
+                {x: -95, y: 555, brightness: 2.9, name: 'Alpha Tucanae'},
+                {x: -65, y: 585, brightness: 4.4, name: 'Gamma Tucanae'},
+                {x: -125, y: 525, brightness: 4.5, name: 'Beta Tucanae'},
+                {x: -35, y: 615, brightness: 4.5, name: 'Delta Tucanae'},
+                {x: -155, y: 495, brightness: 4.9, name: 'Zeta Tucanae'}
+            ],
+            lines: [[4,2], [2,0], [0,1], [1,3]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Toucan',
+                bestView: 'October',
+                notableFeatures: 'Contains Small Magellanic Cloud'
+            }
+        },
+        {
+            name: 'Vela',
+            commonName: 'The Sails',
+            stars: [
+                {x: 35, y: 565, brightness: 1.8, name: 'Regor'},
+                {x: 65, y: 535, brightness: 1.9, name: 'Suhail'},
+                {x: 95, y: 505, brightness: 2.2, name: 'Alsephina'},
+                {x: 5, y: 595, brightness: 2.5, name: 'Markeb'},
+                {x: 125, y: 475, brightness: 3.6, name: 'Kappa Velorum'},
+                {x: -25, y: 625, brightness: 3.8, name: 'Psi Velorum'}
+            ],
+            lines: [[3,0], [0,1], [1,2], [2,4], [3,5]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Sails',
+                bestView: 'March',
+                notableFeatures: 'Part of ancient Argo Navis'
+            }
+        },
+        {
+            name: 'Volans',
+            commonName: 'The Flying Fish',
+            stars: [
+                {x: 125, y: 745, brightness: 4.0, name: 'Alpha Volantis'},
+                {x: 95, y: 775, brightness: 3.8, name: 'Beta Volantis'},
+                {x: 155, y: 715, brightness: 3.6, name: 'Gamma Volantis'},
+                {x: 65, y: 805, brightness: 3.8, name: 'Delta Volantis'},
+                {x: 185, y: 685, brightness: 4.4, name: 'Epsilon Volantis'}
+            ],
+            lines: [[2,0], [0,1], [1,3], [2,4]],
+            info: {
+                type: 'Southern Constellation',
+                meaning: 'The Flying Fish',
+                bestView: 'February',
+                notableFeatures: 'Small constellation near south pole'
             }
         }
     ];
